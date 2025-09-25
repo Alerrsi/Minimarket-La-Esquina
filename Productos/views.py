@@ -25,7 +25,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
         # guardamos el producto si cumple con las validaciones
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(data=request.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors)
     
@@ -57,5 +57,8 @@ class ProductoViewSet(viewsets.ModelViewSet):
 
 
 
-def productoForm(request):
+def productosView(request):
     return render(request, "productos.html")
+
+def productosForm(request):
+    return render(request, "formulario-productos.html")

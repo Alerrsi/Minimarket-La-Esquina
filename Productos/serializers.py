@@ -13,6 +13,9 @@ class ProductoSerializer(serializers.ModelSerializer):
 
 
     def validate_nombre(self, value):
+
+        if Producto.objects.filter(nombre = value):
+            raise serializers.ValidationError("Ya existe un producto con ese nombre")
         return value
     
 

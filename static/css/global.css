@@ -119,3 +119,11 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+.mensaje-error {
+  color: red;
+}
+
+.mensaje-envio {
+  color: rgb(71, 255, 47);
+}
