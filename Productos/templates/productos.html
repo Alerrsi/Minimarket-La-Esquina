@@ -1,11 +1,146 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Minimercado - Formulario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
 </head>
-<body>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">🏪 Minimercado</h1>
+                    </div>
+                    <nav class="hidden md:ml-8 md:flex md:space-x-8">
+                        <a href="index.html" class="nav-link">Dashboard</a>
+                        <a href="tabla-generica.html?tipo=productos" class="nav-link">Productos</a>
+                        <a href="tabla-generica.html?tipo=proveedores" class="nav-link">Proveedores</a>
+                        <a href="tabla-generica.html?tipo=ventas" class="nav-link">Ventas</a>
+                        <a href="tabla-generica.html?tipo=compras" class="nav-link">Compras</a>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                    </button>
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <!-- Page Header -->
+        <div class="flex items-center mb-6">
+            <button onclick="history.back()" class="mr-4 text-gray-500 hover:text-gray-700">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Formulario de Producto</h2>
+                <p class="text-gray-600">Completa la información del producto</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="card">
+            <form id="main-form" class="space-y-6" method="post" {% url '' %}>
+                <!-- Reemplazando campos dinámicos con campos específicos en HTML -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Nombre del Producto
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="nombre" name="nombre" class="input-field" placeholder="Ej: Coca Cola 500ml" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Categoría
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="categoria" name="categoria" class="input-field">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Precio
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" id="precio" name="precio" class="input-field" placeholder="0.00" step="0.01" min="0" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Stock Actual
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" id="stock" name="stock" class="input-field" placeholder="0" min="0" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Stock Mínimo
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" id="stock_minimo" name="stock_minimo" class="input-field" placeholder="5" min="0" required>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <button type="button" class="btn-secondary" onclick="history.back()">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-secondary" id="btn-draft">
+                        <i data-lucide="save" class="w-4 h-4 inline mr-2"></i>
+                        Guardar Borrador
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i data-lucide="check" class="w-4 h-4 inline mr-2"></i>
+                        Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card mt-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                <i data-lucide="help-circle" class="w-5 h-5 inline mr-2"></i>
+                Ayuda
+            </h3>
+            <div class="text-sm text-gray-600">
+                <ul class="list-disc list-inside space-y-1" id = "listaproductos">
+                    
+                </ul>
+            </div>
+        </div>
+    </main>
+
     
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <p class="text-sm text-gray-500">© 2025 Minimercado. Todos los derechos reservados.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-sm text-gray-500 hover:text-gray-900">Ayuda</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-gray-900">Configuración</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/productos.js' %}">
+    </script>
 </body>
 </html>

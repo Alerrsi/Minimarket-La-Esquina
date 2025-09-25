@@ -55,3 +55,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
 
+
+
+def productoForm(request):
+    return render(request, "productos.html")
