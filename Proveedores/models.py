@@ -12,5 +12,5 @@ class Proveedor(models.Model):
     
     class Meta:
         db_table = "proveedor"
-        ordering = {"nombre", "email" , "telefono", "dirección"}
+        ordering = ("nombre", "email" , "telefono", "dirección")
 
