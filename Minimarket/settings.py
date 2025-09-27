@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'Proveedores',
     'Ventas',
     'Core',
+    'Login',
+    'Informes',
+
 ]
 
 MIDDLEWARE = [
