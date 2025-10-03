@@ -15,6 +15,6 @@ class Producto(models.Model):
         return f"{self.nombre} {self.categoria}"
     
     class Meta:
-        db_table = 'producto'
-        ordering = ("id", 'nombre', 'categoria','precio')
+        db_table = 'productos'
+        ordering = ("id", 'nombre', 'categoria','precio', "stock")
 

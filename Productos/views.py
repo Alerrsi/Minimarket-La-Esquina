@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 class ProductoViewSet(viewsets.ModelViewSet):
     # conjunto de datos 
-    queryset = get_list_or_404(Producto)
+    queryset = Producto.objects.all()
     # clase que serializa los datos como json()
     serializer_class = ProductoSerializer
 
@@ -67,4 +67,4 @@ def productosForm(request):
 
 def productosUpdate(request, id):
     producto = get_object_or_404(Producto, pk=id)
-    return render(request, "formulario-productos.html", {"producto": producto})
+    return render(request, "formulario-productos.html", {"producto": producto}) 

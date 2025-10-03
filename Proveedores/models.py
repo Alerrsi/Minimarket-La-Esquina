@@ -11,6 +11,6 @@ class Proveedor(models.Model):
         return f"{self.nombre}"
     
     class Meta:
-        db_table = "proveedor"
+        db_table = "proveedores"
         ordering = ("nombre", "email" , "telefono", "dirección")
 

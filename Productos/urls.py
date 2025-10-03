@@ -15,4 +15,3 @@ urlpatterns = [
     path("Productos/Formulario", productosForm, name = "productosForm"),
     path("Productos/Editar/<int:id>", productosUpdate, name = "productosUpdate"),
 ]
-
