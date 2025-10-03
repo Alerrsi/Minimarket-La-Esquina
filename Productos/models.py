@@ -16,5 +16,5 @@ class Producto(models.Model):
     
     class Meta:
         db_table = 'producto'
-        ordering = ('nombre', 'categoria','precio')
+        ordering = ("id", 'nombre', 'categoria','precio')
 

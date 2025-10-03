@@ -5,6 +5,7 @@ class ProductoSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Producto
         fields = "__all__"
+        read_only_fields = ("id",)
 
 
     def set_context(self, context):
@@ -13,9 +14,6 @@ class ProductoSerializer(serializers.ModelSerializer):
 
 
     def validate_nombre(self, value):
-
-        if Producto.objects.filter(nombre = value):
-            raise serializers.ValidationError("Ya existe un producto con ese nombre")
         return value
     
 
@@ -42,5 +40,7 @@ class ProductoSerializer(serializers.ModelSerializer):
         if not  attrs["stock"] > attrs["stock_minimo"]:
             raise serializers.ValidationError("El stock debe ser mayor al stock minimo")
         
+        if Producto.objects.filter(nombre = attrs["nombre"]) and self.context.get("metodo") == "create": 
+            raise serializers.ValidationError("Ya existe un producto con ese nombre")
 
         return attrs

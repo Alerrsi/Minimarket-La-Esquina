@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 
 {% block main %}
@@ -134,39 +134,21 @@
                     <h3 class="text-lg font-heading font-semibold text-gray-900">Lista de Productos</h3>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200" id = "main-table">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock_mininmo</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opciones</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
 
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="" class=" text-white px-4 py-2 rounded-lg text-sm font-mediumhover:bg-lime-600 hover:text-green-800 mr-3 transition-colors inline-flex items-center">
-                                        <button class="text-primary hover:text-green-800 mr-3">Editar</button>
-                                    </a>
-
-                                    <a href="" class=" text-white px-4 py-2 rounded-lg text-sm font-mediumhover:bg-lime-600 hover:text-green-800 mr-3 transition-colors inline-flex items-center">
-                                        <button class="text-red-600 hover:text-red-800">Eliminar</button>
-                                    </a>
-                                </td>
-                            </tr>
+                            
                             
                                 
                                 
@@ -212,6 +194,18 @@
             </div>
         </div>
     </main>
+
     
+    
+
+   <script>
+    const updateUrlTemplate = "{% url 'productosUpdate' 0 %}".replace(/0$/, "");
+   
+    function actualizar(id) {
+        window.location.href = updateUrlTemplate + id ;
+    }
+</script>
+
+    <script src = "{% static 'js/tablaProductos.js' %}"></script>
 {% endblock main %}
     

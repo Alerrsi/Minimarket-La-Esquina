@@ -20,11 +20,12 @@ class ProductoViewSet(viewsets.ModelViewSet):
     # metodo para crear productos mediante POST
     def create(self, request):
         # deserializampos los datos
-        serializer = ProductoSerializer(data = request.data)
+        serializer = ProductoSerializer(data = request.data, context = {"metodo": "create"})
 
         # guardamos el producto si cumple con las validaciones
         if serializer.is_valid(raise_exception=True):
             serializer.save()
+            print("creacion")
             return Response(data=request.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors)
@@ -38,7 +39,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     # metodo de para actualizar un solo producto mediante PUT
     def update(self, request, pk=None):
         producto = get_object_or_404(Producto, pk=pk)
-        serializer = ProductoSerializer(producto, data = request.data)
+        serializer = ProductoSerializer(producto, data = request.data, context = {"metodo": "update"})
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_200_OK)
@@ -62,3 +63,8 @@ def productosView(request):
 
 def productosForm(request):
     return render(request, "formulario-productos.html")
+
+
+def productosUpdate(request, id):
+    producto = get_object_or_404(Producto, pk=id)
+    return render(request, "formulario-productos.html", {"producto": producto})
