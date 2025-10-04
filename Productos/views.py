@@ -1,9 +1,19 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from rest_framework import viewsets, status
-from .models import Producto
-from .serializers import ProductoSerializer
+from .models import Producto, Categoria
+from .serializers import ProductoSerializer, CategoriaSerializer
 from rest_framework.response import Response
 
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+
+
+    def retrieve(self, request,pk=None,  *args, **kwargs):
+        categoria = get_object_or_404(Categoria, pk=pk)
+        serializer = CategoriaSerializer(categoria)
+        return Response(serializer.data, status= status.HTTP_200_OK)
 
 class ProductoViewSet(viewsets.ModelViewSet):
     # conjunto de datos 
@@ -20,6 +30,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     # metodo para crear productos mediante POST
     def create(self, request):
         # deserializampos los datos
+        print(request.data)
         serializer = ProductoSerializer(data = request.data, context = {"metodo": "create"})
 
         # guardamos el producto si cumple con las validaciones
@@ -62,9 +73,9 @@ def productosView(request):
     return render(request, "productos.html")
 
 def productosForm(request):
-    return render(request, "formulario-productos.html")
+    return render(request, "formulario-productos.html", {"categorias": Categoria.objects.all()})
 
 
 def productosUpdate(request, id):
     producto = get_object_or_404(Producto, pk=id)
-    return render(request, "formulario-productos.html", {"producto": producto}) 
+    return render(request, "formulario-productos.html", {"producto": producto, "categorias": Categoria.objects.all()}) 

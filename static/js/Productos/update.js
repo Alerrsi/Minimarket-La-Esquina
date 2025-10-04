@@ -62,8 +62,7 @@ export const update = (form, nombre, categoria, precio, stock, stock_minimo) => 
 export const poblar = (id, nombre, categoria, precio, stock, stock_minimo) => {
   fetch(`/api/productos/${id}`).
   then(response => response.json()).
-  then( data =>
-    {
+  then( data =>{
     nombre.value = data["nombre"]
     categoria.value = data["categoria"]
     precio.value = data["precio"]

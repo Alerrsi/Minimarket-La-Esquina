@@ -9,10 +9,10 @@ const precio = document.querySelector("#precio");
 const stock = document.querySelector("#stock");
 const stock_minimo = document.querySelector("#stock_minimo");
 
-
+console.log(form.dataset.idproduct)
 
 if (form.dataset.ruta == "update") {
-  poblar(form.dataset.idproduct)
+  poblar(form.dataset.idproduct, nombre, categoria, precio, stock, stock_minimo)
 } 
 
 
@@ -45,7 +45,6 @@ document.querySelector("#main-form").addEventListener("submit", (e) => {
   }
 
   
-// codigo para crear  un producto
  if (form.dataset.ruta == "create") {
     create(nombre, categoria, precio, stock, stock_minimo)
   } else {

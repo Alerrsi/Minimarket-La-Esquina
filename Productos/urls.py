@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import ProductoViewSet, productosView, productosForm, productosUpdate
+from .views import ProductoViewSet, CategoriaViewSet, productosView, productosForm, productosUpdate
 
 # define los endpoints para los viewset
 router = routers.DefaultRouter()
 
 
 router.register("productos", ProductoViewSet, basename="productos")
+router.register("categorias", CategoriaViewSet, basename="categorias")
 
 
 urlpatterns = [
