@@ -171,11 +171,11 @@
 
     <script>
         let contadorProductos = 1;
-
+        const carrito = []
         // Establecer fecha actual por defecto
         document.getElementById('fecha-compra').valueAsDate = new Date();
 
-        function agregarProducto() {
+        function agregarProducto(lista) {
             contadorProductos++;
             const container = document.getElementById('productos-container');
             const nuevoProducto = document.createElement('div');
@@ -227,6 +227,7 @@
                 </div>
             `;
             container.appendChild(nuevoProducto);
+            lista.push(nuevoProducto)
             actualizarTotal();
         }
 

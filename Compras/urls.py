@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import compras
+from .views import comprasForm
 
 urlpatterns = [
-    path("Compras", compras, name = "compras")
+    path("Compras/Formulario", comprasForm, name = "comprasForm")
 ]

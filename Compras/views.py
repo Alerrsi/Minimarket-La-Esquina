@@ -1,6 +1,11 @@
 from django.shortcuts import render
-
+from Proveedores.models import Proveedor
 # Create your views here.
 
-def compras(request):
-    return render(request, "compras.html")
+def comprasForm(request):
+    return render(request, "formulario-compras.html")
+
+
+
+
+
