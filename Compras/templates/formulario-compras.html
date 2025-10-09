@@ -1,283 +1,175 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
-
 {% block main %}
-    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        <div class="mb-6">
-            <h2 class="text-3xl font-heading font-bold text-gray-900">Ingreso de Compras</h2>
-            <p class="text-muted mt-2">Registra las compras de nuevo stock de Productos</p>
+
+ 
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Selección de Proveedor -->
+
+        
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Registro de Compra de Stock</h2>
+        
+       
+
+        <!-- Formulario de Selección de Producto -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <form action="p-6 space-y-6 border-t" method="post" id="main-form" >
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="product" class="form-label">Proveedor</label>
+                    <select name="proveedor" id="proveedor" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent required">
+                         <option value="">Seleccione un proveedor</option>
+                        
+                    </select>
+                    </div>
+                    <div></div>
+                    <div>
+                        <label for="product" class="form-label">Producto</label>
+                    <select name="product" id="producto" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                        <option value="">Seleccione un producto</option>
+                        
+                    </select>
+                    </div>
+                    <div>
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                    <input type="number" min="1" name="cantidad" id="cantidad" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent " placeholder="1" required>
+                    </div>
+                </div> 
+                </div>
+              
+                <div class="-gray-200 pt-6">
+                        <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                            <button 
+                                id="new-product"
+                                type="submit" 
+                                class="w-full sm:w-auto px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-lime-600 transition-colors inline-flex items-center justify-center"
+                            >
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Agregar Producto
+                            </button>
+                        </div>
+                    </div>
+            </form>
+            </div>
+            
+        
+
+        <!-- Carrito de Compras -->
+        <div class="card mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Carrito de Compras</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Nombre</th>
+                            <th class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">Cantidad</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Precio Unitario</th>
+                            <th class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200" id = "tabla">
+                       
+                        
+                        
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <form id="compraForm">
-                <!-- Información del Proveedor -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-heading font-semibold text-gray-900 mb-4 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                        Información del Proveedor
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="proveedor" class="block text-sm font-medium text-gray-700 mb-2">
-                                Proveedor <span class="text-red-500">*</span>
-                            </label>
-                            <select id="proveedor" name="proveedor" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                <option value="">Seleccionar proveedor</option>
-                                <option value="farmaceutica-global">Farmacéutica Global S.A.</option>
-                                <option value="distribuidora-medica">Distribuidora Médica del Norte</option>
-                                <option value="laboratorios-unidos">Laboratorios Unidos</option>
-                                <option value="pharma-supply">Pharma Supply International</option>
-                                <option value="medicamentos-express">Productos Express</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="fecha-compra" class="block text-sm font-medium text-gray-700 mb-2">
-                                Fecha de Compra <span class="text-red-500">*</span>
-                            </label>
-                            <input type="date" id="fecha-compra" name="fecha-compra" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                        </div>
-                        <div>
-                            <label for="numero-factura" class="block text-sm font-medium text-gray-700 mb-2">
-                                Número de Factura
-                            </label>
-                            <input type="text" id="numero-factura" name="numero-factura" placeholder="Ej: FAC-2024-001" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                        </div>
-                        <div>
-                            <label for="metodo-pago" class="block text-sm font-medium text-gray-700 mb-2">
-                                Método de Pago
-                            </label>
-                            <select id="metodo-pago" name="metodo-pago" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                <option value="efectivo">Efectivo</option>
-                                <option value="transferencia">Transferencia Bancaria</option>
-                                <option value="credito">Crédito</option>
-                                <option value="cheque">Cheque</option>
-                            </select>
-                        </div>
-                    </div>
+        <!-- Total y Botones de Acción -->
+        <div class="card">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="text-2xl font-bold text-gray-900">
+                    Total: <span class="text-green-600">${{ total }}</span>
                 </div>
-
-                <!-- Productos -->
-                <div class="mb-8">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-heading font-semibold text-gray-900 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                
+                <div class="flex gap-3 w-full sm:w-auto">
+                    <button id="openModalButton" class="btn-primary flex-1 sm:flex-none flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        Pagar
+                    </button>
+                    
+                    <form action="" method="post" class="flex-1 sm:flex-none">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-secondary w-full flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>
-                            Productos
-                        </h3>
-                        <button type="button" onclick="agregarProducto()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-800 transition-colors flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Agregar Producto
+                            Limpiar
                         </button>
-                    </div>
-
-                    <div id="productos-container" class="space-y-4">
-                        <!-- Producto inicial -->
-                        <div class="producto-item bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <div class="flex justify-between items-start mb-4">
-                                <h4 class="font-medium text-gray-900">Producto #1</h4>
-                                <button type="button" onclick="eliminarProducto(this)" class="text-red-600 hover:text-red-800 text-sm">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Producto <span class="text-red-500">*</span>
-                                    </label>
-                                    <select name="producto[]" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                        <option value="">Seleccionar producto</option>
-                                        <option value="paracetamol-500mg">Paracetamol 500mg</option>
-                                        <option value="ibuprofeno-400mg">Ibuprofeno 400mg</option>
-                                        <option value="amoxicilina-500mg">Amoxicilina 500mg</option>
-                                        <option value="omeprazol-20mg">Omeprazol 20mg</option>
-                                        <option value="losartan-50mg">Losartán 50mg</option>
-                                        <option value="metformina-850mg">Metformina 850mg</option>
-                                        <option value="atorvastatina-20mg">Atorvastatina 20mg</option>
-                                        <option value="aspirina-100mg">Aspirina 100mg</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Cantidad <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="number" name="cantidad[]" min="1" required placeholder="0" onchange="calcularSubtotal(this)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Costo Unitario <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="number" name="costo[]" min="0" step="0.01" required placeholder="0.00" onchange="calcularSubtotal(this)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                </div>
-                            </div>
-                            <div class="mt-3 flex justify-end">
-                                <div class="text-right">
-                                    <span class="text-sm text-gray-600">Subtotal: </span>
-                                    <span class="subtotal-value text-lg font-semibold text-gray-900">$0.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-
-                <!-- Resumen Total -->
-                <div class="bg-secondary border border-green-200 rounded-lg p-6 mb-6">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="text-lg font-heading font-semibold text-gray-900">Total de la Compra</h3>
-                            <p class="text-sm text-muted mt-1">Suma de todos los productos</p>
-                        </div>
-                        <div class="text-right">
-                            <div id="total-compra" class="text-3xl font-heading font-bold text-primary">$0.00</div>
-                            <div class="text-sm text-muted mt-1">
-                                <span id="total-items">0</span> productos
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notas -->
-                <div class="mb-6">
-                    <label for="notas" class="block text-sm font-medium text-gray-700 mb-2">
-                        Notas Adicionales
-                    </label>
-                    <textarea id="notas" name="notas" rows="3" placeholder="Observaciones sobre la compra..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
-                </div>
-
-                <!-- Botones de Acción -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-end">
-                    <button type="button" onclick="window.location.href='inicio.html'" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-green-800 transition-colors flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Registrar Compra
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </main>
 
+    <!-- Modal de Documento Tributario -->
+    <div id="myModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Elija Documento Tributario</h2>
+                <button class="close text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <a href="" target="_blank" class="btn-primary text-center flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Boleta
+                </a>
+                
+                <a href="" class="btn-secondary text-center flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Factura
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let contadorProductos = 1;
-        const carrito = []
-        // Establecer fecha actual por defecto
-        document.getElementById('fecha-compra').valueAsDate = new Date();
+        // Modal functionality
+        const modal = document.getElementById('myModal');
+        const openBtn = document.getElementById('openModalButton');
+        const closeBtn = document.querySelector('.close');
 
-        function agregarProducto(lista) {
-            contadorProductos++;
-            const container = document.getElementById('productos-container');
-            const nuevoProducto = document.createElement('div');
-            nuevoProducto.className = 'producto-item bg-gray-50 p-4 rounded-lg border border-gray-200';
-            nuevoProducto.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <h4 class="font-medium text-gray-900">Producto #${contadorProductos}</h4>
-                    <button type="button" onclick="eliminarProducto(this)" class="text-red-600 hover:text-red-800 text-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Producto <span class="text-red-500">*</span>
-                        </label>
-                        <select name="producto[]" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option value="">Seleccionar Producto</option>
-                            <option value="paracetamol-500mg">Paracetamol 500mg</option>
-                            <option value="ibuprofeno-400mg">Ibuprofeno 400mg</option>
-                            <option value="amoxicilina-500mg">Amoxicilina 500mg</option>
-                            <option value="omeprazol-20mg">Omeprazol 20mg</option>
-                            <option value="losartan-50mg">Losartán 50mg</option>
-                            <option value="metformina-850mg">Metformina 850mg</option>
-                            <option value="atorvastatina-20mg">Atorvastatina 20mg</option>
-                            <option value="aspirina-100mg">Aspirina 100mg</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Cantidad <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" name="cantidad[]" min="1" required placeholder="0" onchange="calcularSubtotal(this)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Costo Unitario <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" name="costo[]" min="0" step="0.01" required placeholder="0.00" onchange="calcularSubtotal(this)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                    </div>
-                </div>
-                <div class="mt-3 flex justify-end">
-                    <div class="text-right">
-                        <span class="text-sm text-gray-600">Subtotal: </span>
-                        <span class="subtotal-value text-lg font-semibold text-gray-900">$0.00</span>
-                    </div>
-                </div>
-            `;
-            container.appendChild(nuevoProducto);
-            lista.push(nuevoProducto)
-            actualizarTotal();
-        }
-
-        function eliminarProducto(button) {
-            const productos = document.querySelectorAll('.producto-item');
-            if (productos.length > 1) {
-                button.closest('.producto-item').remove();
-                actualizarTotal();
-            } else {
-                alert('Debe haber al menos un producto en la compra');
-            }
-        }
-
-        function calcularSubtotal(input) {
-            const productoItem = input.closest('.producto-item');
-            const cantidad = parseFloat(productoItem.querySelector('input[name="cantidad[]"]').value) || 0;
-            const costo = parseFloat(productoItem.querySelector('input[name="costo[]"]').value) || 0;
-            const subtotal = cantidad * costo;
-            
-            productoItem.querySelector('.subtotal-value').textContent = `$${subtotal.toFixed(2)}`;
-            actualizarTotal();
-        }
-
-        function actualizarTotal() {
-            const productos = document.querySelectorAll('.producto-item');
-            let total = 0;
-            let totalItems = 0;
-
-            productos.forEach(producto => {
-                const cantidad = parseFloat(producto.querySelector('input[name="cantidad[]"]').value) || 0;
-                const costo = parseFloat(producto.querySelector('input[name="costo[]"]').value) || 0;
-                total += cantidad * costo;
-                if (cantidad > 0) totalItems++;
-            });
-
-            document.getElementById('total-compra').textContent = `$${total.toFixed(2)}`;
-            document.getElementById('total-items').textContent = totalItems;
-        }
-
-        document.getElementById('compraForm').addEventListener('submit', function(e) {
+        openBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            const proveedor = document.getElementById('proveedor').value;
-            const total = document.getElementById('total-compra').textContent;
-            
-            if (confirm(`¿Confirmar compra al proveedor por ${total}?`)) {
-                alert('Compra registrada exitosamente');
-                window.location.href = 'inicio.html';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
             }
         });
     </script>
+
+    <script src="{% static 'js/Compras/poblarForm.js' %}"></script>
+    <script src="{% static 'js/Compras/carrito.js' %}"></script>
+
 {% endblock main %}
     
