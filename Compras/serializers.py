@@ -8,7 +8,8 @@ from Productos.models import Producto
 from .models import Compra, DetalleCompra
 
 class DetalleCompraSerializer(serializers.Serializer):
-    producto = serializers.IntegerField()
+    nombre_producto = serializers.CharField(read_only= True)
+    producto = serializers.IntegerField(write_only = True)
     cantidad = serializers.IntegerField()
     costo_unitario = serializers.FloatField()
 
@@ -92,6 +93,10 @@ class CompraSerializer(serializers.Serializer):
             detalle_compra.save()
 
         return compra
+    
+
+    
+
 
         
 

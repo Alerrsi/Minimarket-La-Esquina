@@ -8,7 +8,7 @@ from Login.models import Usuario
 
 
 class Compra(models.Model):
-    fecha = models.DateTimeField(verbose_name="fecha", default = datetime.datetime.now())
+    fecha = models.DateField(verbose_name="fecha", default = datetime.datetime.now())
     total = models.FloatField(verbose_name="total", null = True)
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, null = False)
     # de momento podrá ser null a falta de login

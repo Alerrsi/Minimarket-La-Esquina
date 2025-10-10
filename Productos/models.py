@@ -22,7 +22,7 @@ class Producto(models.Model):
 
 
     def __str__(self) -> str:
-        return f"{self.nombre} {self.categoria}"
+        return self.nombre
     
     class Meta:
         db_table = 'productos'

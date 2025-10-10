@@ -292,3 +292,35 @@ select.input-field:focus {
 .nav-link.active {
   @apply text-green-600 bg-green-50;
 }
+
+/* Nuevos estilos para la funcionalidad de compras */
+.producto-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.producto-item:hover {
+  transform: translateY(-1px);
+}
+
+.btn-eliminar {
+  @apply text-red-600 hover:text-red-800 transition-colors duration-200 font-medium;
+}
+
+.btn-editar {
+  @apply text-blue-600 hover:text-blue-800 transition-colors duration-200 font-medium;
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.success-bg {
+  background-color: #f0fdf4;
+  border-color: #dcfce7;
+}
+
+.error-bg {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
