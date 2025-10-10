@@ -1,6 +1,9 @@
-from django.urls import path
-from .views import comprasForm
+from django.urls import path, include
+from rest_framework import routers
+from .views import comprasForm, CompraApiView
+
 
 urlpatterns = [
-    path("Compras/Formulario", comprasForm, name = "comprasForm")
+    path("api/compras", CompraApiView.as_view(), name = "compras"),
+    path("Compras/Formulario", comprasForm, name = "comprasForm"),
 ]

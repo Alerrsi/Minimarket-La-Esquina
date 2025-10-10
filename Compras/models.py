@@ -9,16 +9,22 @@ from Login.models import Usuario
 
 class Compra(models.Model):
     fecha = models.DateTimeField(verbose_name="fecha", default = datetime.datetime.now())
-    total = models.FloatField(verbose_name="total")
-    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    total = models.FloatField(verbose_name="total", null = True)
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, null = False)
+    # de momento podrá ser null a falta de login
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, null = True) 
 
     class Meta: 
         db_table = "compras"
 
 
     def __str__(self):
-        return f"{self.fecha} {self.total}"
+        return f"Fecha: {self.fecha} | Total:  {self.total}"
+    
+
+
+    
+
     
 
 
