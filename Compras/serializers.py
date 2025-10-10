@@ -3,7 +3,6 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from Proveedores.serializers import ProveedorSerializer
-from Proveedores.serializers import ProveedorSerializer
 from Proveedores.models import Proveedor
 from Productos.models import Producto
 from .models import Compra, DetalleCompra
@@ -15,7 +14,7 @@ class DetalleCompraSerializer(serializers.Serializer):
 
 
     def validate_producto(self, value):
-        if not  Producto.objects.filter(pk=value):
+        if not  Producto.objects.filter(pk=value).exists():
             raise serializers.ValidationError("Producto no existe")
         
         return value
@@ -67,11 +66,11 @@ class CompraSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         # quitamos los productos y almacenamos en otra variable
-        productos = validated_data.pop("productos", [])
+        detalles = validated_data.pop("productos", [])
 
         
         # calculamos el costo total de cada productos
-        costos = [i["costo_unitario"] * i["cantidad"] for i in productos]
+        costos = [i["costo_unitario"] * i["cantidad"] for i in detalles]
         
         # creamos la compra con el total de todos los productos
         compra = Compra(
@@ -80,25 +79,19 @@ class CompraSerializer(serializers.Serializer):
             proveedor = Proveedor.objects.get(pk=validated_data["proveedor"])
             )
         
-        for producto in productos: 
-            print(producto)
-            DetalleCompra(
-                producto
+        compra.save()
+        
+        for detalle in detalles: 
+            detalle_compra = DetalleCompra(
+                compra = compra,
+                producto = Producto.objects.get(pk= detalle["producto"]),
+                cantidad = detalle["cantidad"],
+                costo_unitario = detalle["costo_unitario"],
             )
-        
 
-        
+            detalle_compra.save()
 
-        
-
-        
-        
-
-
-        
-       
-        
-        return Response(status=status.HTTP_201_CREATED)
+        return compra
 
         
 
