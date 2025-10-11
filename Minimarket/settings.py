@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -142,3 +142,7 @@ STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 #Login settings
 AUTH_USER_MODEL = 'Login.Usuario'
+
+LOGIN_REDIRECT_URL = 'index'
+
+LOGIN_URL = 'accounts/login'
