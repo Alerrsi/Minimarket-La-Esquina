@@ -277,23 +277,56 @@ const enviarCompra = async () => {
             body: JSON.stringify(compra)
         });
 
-        if (response.ok) {
+        if (response.status == 201) {
             const result = await response.json();
             mostrarResultado('Éxito', 'Compra registrada correctamente.');
             limpiarCarrito();
-        } else {
-            const errorText = await response.text();
-            let errorMessage = 'Error al enviar la compra';
-            
-            try {
-                const errorJson = JSON.parse(errorText);
-                errorMessage = errorJson.message || errorJson.detail || errorMessage;
-            } catch {
-                errorMessage = errorText || errorMessage;
-            }
-            
-            throw new Error(errorMessage);
+        }else {
+    const errorText = await response.text();
+    let errorMessage = 'Error al enviar la compra.';
+
+    try {
+        const errorJson = JSON.parse(errorText);
+
+        const mensajes = [];
+
+        if (errorJson.fecha) {
+            mensajes.push(`📅 Fecha: ${errorJson.fecha.join(', ')}`);
         }
+
+        if (errorJson.proveedor) {
+            mensajes.push(`🏢 Proveedor: ${errorJson.proveedor.join(', ')}`);
+        }
+
+        if (errorJson.productos && Array.isArray(errorJson.productos)) {
+            errorJson.productos.forEach((prod, index) => {
+                if (prod.producto) {
+                    mensajes.push(`🧾 Producto ${index + 1}: ${prod.producto.join(', ')}`);
+                }
+                if (prod.cantidad) {
+                    mensajes.push(`📦 Cantidad (producto ${index + 1}): ${prod.cantidad.join(', ')}`);
+                }
+                if (prod.non_field_errors) {
+                    mensajes.push(`⚠️ Producto ${index + 1}: ${prod.non_field_errors.join(', ')}`);
+                }
+            });
+        }
+
+        if (mensajes.length > 0) {
+            errorMessage = mensajes.join('\n');
+        } else {
+            // Si no coincide con los patrones esperados
+            errorMessage = errorJson.detail || JSON.stringify(errorJson);
+        }
+
+    } catch (err) {
+        // Si no se puede parsear el JSON
+        errorMessage = errorText || 'Error inesperado al procesar la respuesta del servidor.';
+    }
+
+    throw new Error(errorMessage);
+}
+
 
     } catch (error) {
         console.error('Error:', error);

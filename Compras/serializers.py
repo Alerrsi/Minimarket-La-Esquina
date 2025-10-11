@@ -41,6 +41,7 @@ class DetalleCompraSerializer(serializers.Serializer):
         precio = Producto.objects.filter(pk= attrs["producto"]).values_list("precio", flat=True)[0]
         
         if precio <= attrs["costo_unitario"]:
+            
             raise serializers.ValidationError("el costo unitario debe ser menor al precio de venta: {}".format(precio))
 
 
