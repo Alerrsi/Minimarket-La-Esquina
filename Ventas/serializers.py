@@ -9,7 +9,6 @@ class DetalleVentaSerializer(serializers.Serializer):
     nombre_producto = serializers.CharField(read_only= True)
     producto = serializers.IntegerField(write_only = True)
     cantidad = serializers.IntegerField()
-    costo_unitario = serializers.FloatField()
 
     def validate_producto(self, value):
         if not  Producto.objects.filter(pk=value).exists():
@@ -23,48 +22,47 @@ class DetalleVentaSerializer(serializers.Serializer):
         
         return value
         
-    def validate_costo_unitario(self, value):
-        if not value > 0:
-            raise serializers.ValidationError("El costo unitario debe ser positvo")
-        
-        return value
     
     def validate(self, attrs):
         precio = Producto.objects.filter(pk= attrs["producto"]).values_list("precio", flat=True)[0]
-        
-        if precio <= attrs["costo_unitario"]:
-            raise serializers.ValidationError("el costo unitario debe ser menor al precio de venta: {}".format(precio))
 
         return attrs
 
 class VentaSerializer(serializers.Serializer):
-    fecha = serializers.DateField()
     total = serializers.FloatField(read_only = True)
-    productos = DetalleVentaSerializer(many=True)
+    detalle = DetalleVentaSerializer(many=True, write_only=True)
 
     def create(self, validated_data):
         # quitamos los productos y almacenamos en otra variable
-        detalles = validated_data.pop("productos", [])
+        detalles = validated_data.pop("detalle", [])
 
         # calculamos el costo total de cada productos
-        costos = [i["costo_unitario"] * i["cantidad"] for i in detalles]
+        total_venta = 0
         
-        # creamos la venta con el total de todos los productos
-        venta = Venta(
-            fecha = validated_data["fecha"],
-            total = sum(costos), # se suman los costos
-            )
+        # creamos la venta con el total de todos los producto
+
+        venta = Venta()
         
         venta.save()
         
-        for detalle in detalles: 
+        for detalle in detalles:
+            # Se accede al producto
+            producto = Producto.objects.get(pk=detalle["producto"])
+            
+            # Calcular el subtotal del producto en especifo y despues sumar
+            subtotal = producto.precio * detalle["cantidad"]
+            total_venta += subtotal
+            
+            # Create DetalleVenta
             detalle_venta = DetalleVenta(
-                venta = venta,
-                producto = Producto.objects.get(pk= detalle["producto"]),
-                cantidad = detalle["cantidad"],
-                costo_unitario = detalle["costo_unitario"],
+                id_venta=venta,
+                id_producto=producto,
+                cantidad=detalle["cantidad"],
             )
-
             detalle_venta.save()
-
+        
+        # Actualizar el total final.
+        venta.total = total_venta
+        venta.save()
+        
         return venta

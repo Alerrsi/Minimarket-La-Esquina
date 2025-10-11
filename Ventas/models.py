@@ -6,7 +6,7 @@ from Login.models import Usuario
 from Productos.models import Producto
 
 class Venta(models.Model):
-    fecha = models.DateTimeField(verbose_name='fecha_venta', default= datetime.datetime.now())
+    fecha = models.DateTimeField(verbose_name='fecha_venta', default=datetime.datetime.now) 
     total = models.FloatField(verbose_name='total_venta', null=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True)
 
