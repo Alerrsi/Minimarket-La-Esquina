@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'Core',
     'Login',
     'Informes',
-
+    'Usuarios',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +143,8 @@ STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 #Login settings
 AUTH_USER_MODEL = 'Login.Usuario'
 
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'direct'
 
-LOGIN_URL = 'accounts/login'
+LOGIN_URL = 'accounts/login/'
+
+LOGOUT_REDIRECT_URL = 'login'

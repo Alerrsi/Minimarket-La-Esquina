@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-secondary to-white py-8">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-2">
+                    {% if "Modificar" in titulo %}
+                    ✏️ {{ titulo }}
+                    {% else %}
+                    ➕ {{ titulo }}
+                    {% endif %}
+                </h1>
+                <p class="text-lg text-muted">
+                    {% if "Modificar" in titulo %}
+                    Actualiza la información del usuario en el sistema
+                    {% else %}
+                    Completa los datos para agregar un nuevo usuario
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="py-8 bg-white">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nombre -->
+                        <div class="form-group">
+                            <label for="nombre" class="form-label">
+                                Nombre <span class="required">*</span>
+                            </label>
+                            <input type="text" id="nombre" name="nombre"
+                                   value="{{ usuario.nombre|default:'' }}"
+                                   placeholder="Ejemplo: Juan"
+                                   class="input-field"
+                                   required>
+                        </div>
+
+                        <!-- Apellido -->
+                        <div class="form-group">
+                            <label for="apellido" class="form-label">
+                                Apellido <span class="required">*</span>
+                            </label>
+                            <input type="text" id="apellido" name="apellido"
+                                   value="{{ usuario.apellido|default:'' }}"
+                                   placeholder="Ejemplo: Pérez"
+                                   class="input-field"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            Email <span class="required">*</span>
+                        </label>
+                        <input type="email" id="email" name="email"
+                               value="{{ usuario.email|default:'' }}"
+                               placeholder="correo@ejemplo.com"
+                               class="input-field"
+                               required>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="form-group">
+                        <label for="direccion" class="form-label">
+                            Dirección <span class="required">*</span>
+                        </label>
+                        <input type="text" id="direccion" name="direccion"
+                               value="{{ usuario.direccion|default:'' }}"
+                               placeholder="Ejemplo: Calle Falsa 123"
+                               class="input-field"
+                               required>
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="form-group">
+                        <label for="rol" class="form-label">
+                            Rol <span class="required">*</span>
+                        </label>
+                        <select id="rol" name="rol" class="input-field" required>
+                            <option value="">-- Seleccione un rol --</option>
+                            {% for r in roles %}
+                                <option value="{{ r.id }}"
+                                    {% if usuario and usuario.rol.id == r.id %}selected{% endif %}>
+                                    {{ r.nombre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            Contraseña {% if "Agregar" in titulo %}<span class="required">*</span>{% endif %}
+                        </label>
+                        <input type="password" id="password" name="password"
+                               class="input-field"
+                               {% if "Agregar" in titulo %}required{% endif %}
+                               placeholder="{% if 'Modificar' in titulo %}Dejar vacío si no desea cambiar{% else %}Contraseña del usuario{% endif %}">
+                        {% if "Modificar" in titulo %}
+                        <p class="text-sm text-gray-500 mt-1">Dejar vacío para mantener la contraseña actual</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <button type="submit" class="btn-primary flex-1 py-3 text-center">
+                            {% if "Modificar" in titulo %}
+                            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            💾 Guardar Cambios
+                            {% else %}
+                            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            ➕ Agregar Usuario
+                            {% endif %}
+                        </button>
+                        
+                        <a href="{% url 'usuario' %}" class="btn-secondary flex-1 py-3 text-center no-underline">
+                            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            ↩️ Volver al Listado
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="mt-8 bg-secondary rounded-xl p-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-heading font-semibold text-gray-900">Información importante</h3>
+                        <div class="mt-2 text-sm text-muted">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Todos los campos marcados con <span class="required">*</span> son obligatorios</li>
+                                <li>El email debe ser único para cada usuario</li>
+                                <li>Los usuarios con rol "Sysadmin" tendrán acceso completo al sistema</li>
+                                {% if "Modificar" in titulo %}
+                                <li>Si no desea cambiar la contraseña, deje el campo vacío</li>
+                                {% else %}
+                                <li>La contraseña debe tener al menos 8 caracteres</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Estilos adicionales para el formulario -->
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-label .required {
+        color: #ef4444;
+        margin-left: 0.25rem;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: white;
+        border: 2px solid #d1d5db;
+        border-radius: 0.5rem;
+        color: #111827;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .input-field::placeholder {
+        color: #9ca3af;
+    }
+
+    .input-field:hover {
+        border-color: #9ca3af;
+    }
+
+    .input-field:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    select.input-field {
+        cursor: pointer;
+        background-color: white;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2310b981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 20px 20px;
+        padding-right: 40px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    select.input-field:hover {
+        border-color: #10b981;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2310b981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    }
+
+    .btn-primary {
+        background-color: #15803d;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-primary:hover {
+        background-color: #166534;
+    }
+
+    .btn-secondary {
+        background-color: #f3f4f6;
+        color: #374151;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-secondary:hover {
+        background-color: #e5e7eb;
+        color: #111827;
+    }
+
+    @media (max-width: 640px) {
+        .grid-cols-1.md\:grid-cols-2 {
+            grid-template-columns: 1fr;
+        }
+        
+        .flex-col.sm\:flex-row {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}

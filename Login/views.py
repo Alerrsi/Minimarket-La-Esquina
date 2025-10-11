@@ -9,4 +9,4 @@ class SpecificUserLoginView(LoginView):
 
 def logoutView(request):
     logout(request)
-    return redirect("index")
+    return redirect("login")

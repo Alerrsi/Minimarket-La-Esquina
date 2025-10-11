@@ -31,19 +31,25 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, nombre, apellido, email, direccion, rol, password):
+    def create_superuser(self, nombre, apellido, email, direccion, password):
+        try:
+            rol_sysadmin = Rol.objects.get(nombre='Sysadmin')
+        except Rol.DoesNotExist:
+            raise ValueError("El rol 'Sysadmin' no existe. Debe crearse antes de crear un superusuario.")
+
         user = self.create_user(
             nombre=nombre,
             apellido=apellido,
             email=email,
             direccion=direccion,
-            rol= Rol.objects.get(pk=rol),
+            rol=rol_sysadmin,
             password=password
         )
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
         return user
+
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     nombre = models.CharField(max_length=100)
@@ -58,7 +64,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     objects = UsuarioManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["nombre", "apellido", "direccion", "rol"]
+    REQUIRED_FIELDS = ["nombre", "apellido", "direccion"]
 
     def __str__(self):
         return f"{self.nombre} {self.apellido}"

@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-secondary to-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-2">
+                        👥 Gestión de <span class="text-primary">Usuarios</span>
+                    </h1>
+                    <p class="text-lg text-muted max-w-2xl">
+                        Administra los usuarios del sistema de manera eficiente y segura
+                    </p>
+                </div>
+                <a href="{% url 'UsuarioAdd' %}" class="bg-accent text-white px-6 py-3 rounded-lg font-medium hover:bg-lime-600 transition-colors inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Agregar Usuario
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-8 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-secondary rounded-xl p-6 text-center">
+                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-heading font-bold text-gray-900 mb-1">{{ users|length }}</h3>
+                    <p class="text-muted text-sm">Usuarios Totales</p>
+                </div>
+                <div class="bg-secondary rounded-xl p-6 text-center">
+                    <div class="w-12 h-12 bg-accent rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-heading font-bold text-gray-900 mb-1">{{ users|length }}</h3>
+                    <p class="text-muted text-sm">Usuarios Activos</p>
+                </div>
+                <div class="bg-secondary rounded-xl p-6 text-center">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-heading font-bold text-gray-900 mb-1">
+                        {% with sysadmins=users %}{% for user in sysadmins %}{% if user.rol.nombre|lower == "sysadmin" %}{% if forloop.first %}1{% endif %}{% endif %}{% endfor %}{% endwith %}
+                    </h3>
+                    <p class="text-muted text-sm">Administradores</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Users Table Section -->
+    <section class="py-8 bg-secondary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-heading font-semibold text-gray-700 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-4 text-left text-xs font-heading font-semibold text-gray-700 uppercase tracking-wider">Nombre</th>
+                                <th class="px-6 py-4 text-left text-xs font-heading font-semibold text-gray-700 uppercase tracking-wider">Apellido</th>
+                                <th class="px-6 py-4 text-left text-xs font-heading font-semibold text-gray-700 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-heading font-semibold text-gray-700 uppercase tracking-wider">Dirección</th>
+                                <th class="px-6 py-4 text-left text-xs font-heading font-semibold text-gray-700 uppercase tracking-wider">Rol</th>
+                                <th class="px-6 py-4 text-left text-xs font-heading font-semibold text-gray-700 uppercase tracking-wider">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for user in users %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-medium text-gray-900">#{{ user.id }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-gray-900">{{ user.nombre }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-gray-900">{{ user.apellido }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-gray-600">{{ user.email }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-gray-600">{{ user.direccion }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                        {% if user.rol.nombre|lower == 'sysadmin' %}bg-purple-100 text-purple-800
+                                        {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                        {{ user.rol.nombre }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <a href="{% url 'UsuarioMod' user.id %}" class="text-blue-600 hover:text-blue-900 transition-colors inline-flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Editar
+                                        </a>
+                                        <button onclick="showDeleteModal({{ user.id }}, '{{ user.nombre }} {{ user.apellido }}')" 
+                                                class="text-red-600 hover:text-red-900 transition-colors inline-flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        <h3 class="text-lg font-heading font-semibold text-gray-900 mb-2">No hay usuarios registrados</h3>
+                                        <p class="text-muted mb-4">Comienza agregando el primer usuario al sistema</p>
+                                        <a href="{% url 'UsuarioAdd' %}" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-800 transition-colors inline-flex items-center">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Agregar Primer Usuario
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Modal de Confirmación -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+        <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+        </div>
+        <h3 class="text-lg font-heading font-semibold text-gray-900 text-center mb-2">Confirmar Eliminación</h3>
+        <p id="modalText" class="text-muted text-center mb-6">¿Estás seguro de que deseas eliminar este usuario?</p>
+        <div class="flex space-x-3">
+            <button onclick="hideDeleteModal()" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                Cancelar
+            </button>
+            <button id="confirmDelete" class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors">
+                Sí, Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let userIdToDelete = null;
+
+    function showDeleteModal(userId, userName) {
+        userIdToDelete = userId;
+        document.getElementById('modalText').innerHTML = 
+            `¿Estás seguro de que deseas eliminar al usuario <strong>"${userName}"</strong>?<br><span class="text-sm text-red-600">Esta acción no se puede deshacer.</span>`;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function hideDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        userIdToDelete = null;
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        if (userIdToDelete) {
+            window.location.href = "{% url 'UsuarioDel' 0 %}".replace('0', userIdToDelete);
+        }
+    });
+
+    // Cerrar modal al hacer clic fuera del contenido
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideDeleteModal();
+        }
+    });
+
+    // Cerrar modal con tecla Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideDeleteModal();
+        }
+    });
+</script>
+{% endblock %}
