@@ -6,7 +6,7 @@ from Login.models import Usuario
 from Productos.models import Producto
 
 class Venta(models.Model):
-    fecha = models.DateTimeField(verbose_name='fecha_venta', default= datetime.datetime.now)
+    fecha = models.DateTimeField(verbose_name='fecha_venta', default= datetime.datetime.now())
     total = models.FloatField(verbose_name='total_venta', null=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True)
 
@@ -21,9 +21,9 @@ class DetalleVenta(models.Model):
     cantidad = models.IntegerField(verbose_name='cantidad_venta')
 
     class Meta:
-        db_table = "deatlles_ventas"
+        db_table = "detalles_ventas"
     
     def __str__(self):
-        return f"{self.producto} {self.cantidad}"
+        return f"{self.id_producto} {self.cantidad}"
 
 # Create your models here.
