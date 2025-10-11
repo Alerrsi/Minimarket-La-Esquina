@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils import timezone
 
 class Rol(models.Model):
     nombre = models.CharField('Nombre', max_length=100)
@@ -25,7 +26,8 @@ class UsuarioManager(BaseUserManager):
             apellido=apellido,
             email=email,
             direccion=direccion,
-            rol=rol
+            rol=rol,
+            date_joined=timezone.now() 
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -57,6 +59,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     direccion = models.CharField(max_length=100)
     rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
+    
+    date_joined = models.DateTimeField('Fecha de registro', default=timezone.now)
+    last_login = models.DateTimeField('Último acceso', null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False) 

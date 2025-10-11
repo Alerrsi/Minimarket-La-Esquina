@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from Login.models import Usuario, Rol
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 @login_required
 def Usuarioviews(request):
@@ -95,3 +96,29 @@ def UsuarioDel(request, id):
         return redirect('usuario')
     else:
         return redirect("direct")
+    
+@login_required
+def ViewProfile(request):
+    # El usuario ya está autenticado gracias al decorator @login_required
+    user = request.user
+    
+    if request.method == 'POST':
+        # Actualizar datos del perfil
+        user.nombre = request.POST.get('nombre', user.nombre)
+        user.apellido = request.POST.get('apellido', user.apellido)
+        user.email = request.POST.get('email', user.email)
+        user.direccion = request.POST.get('direccion', user.direccion)
+        
+        # Manejar cambio de contraseña si se proporciona
+        password = request.POST.get('password')
+        if password:
+            user.set_password(password)
+        
+        user.save()
+        messages.success(request, 'Perfil actualizado correctamente.')
+        return redirect('profile')
+    
+    context = {
+        'user': user
+    }
+    return render(request, 'profile.html', context)
