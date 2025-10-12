@@ -99,7 +99,6 @@ def UsuarioDel(request, id):
     
 @login_required
 def ViewProfile(request):
-    # El usuario ya está autenticado gracias al decorator @login_required
     user = request.user
     
     if request.method == 'POST':
@@ -108,6 +107,10 @@ def ViewProfile(request):
         user.apellido = request.POST.get('apellido', user.apellido)
         user.email = request.POST.get('email', user.email)
         user.direccion = request.POST.get('direccion', user.direccion)
+        
+        # Manejar la foto de perfil
+        if 'profile_picture' in request.FILES:
+            user.profile_picture = request.FILES['profile_picture']
         
         # Manejar cambio de contraseña si se proporciona
         password = request.POST.get('password')

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
+import os
 
 class Rol(models.Model):
     nombre = models.CharField('Nombre', max_length=100)
@@ -52,6 +53,10 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+def user_picture(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f"profile_{instance.id}.{ext}"
+    return os.path.join('profile_pictures', f"user_{instance.id}", filename)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     nombre = models.CharField(max_length=100)
@@ -59,9 +64,20 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     direccion = models.CharField(max_length=100)
     rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
+
+    #Campo de foto perfil
+    profile_picture = models.ImageField(
+        'Foto de perfil',
+        upload_to=user_picture,
+        null=True,
+        blank=True,
+        default='profile_pictures/default_profile.png'
+    )
     
     date_joined = models.DateTimeField('Fecha de registro', default=timezone.now)
     last_login = models.DateTimeField('Último acceso', null=True, blank=True)
+    last_update = models.DateTimeField('Fecha de modificación', auto_now=True)
+
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False) 
@@ -74,3 +90,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
 
+    def get_profile_picture_url(self):
+        if self.profile_picture and hasattr(self.profile_picture, 'url'):
+            return self.profile_picture.url
+        return '/static/images/default_profile.png'
