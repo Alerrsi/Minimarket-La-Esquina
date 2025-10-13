@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from rest_framework import viewsets, status
 from .models import Producto, Categoria
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .serializers import ProductoSerializer, CategoriaSerializer
 from rest_framework.response import Response
 
@@ -68,14 +69,19 @@ class ProductoViewSet(viewsets.ModelViewSet):
 
 
 
-
+@login_required
+@user_passes_test(lambda x: x.rol == "Cajero" or x.rol == "Sysadmin")
 def productosView(request):
     return render(request, "productos.html")
 
+
+@login_required
+@user_passes_test(lambda x: x.rol == "Cajero" or x.rol == "Sysadmin")
 def productosForm(request):
     return render(request, "formulario-productos.html", {"categorias": Categoria.objects.all()})
 
-
+@login_required
+@user_passes_test(lambda x: x.rol == "Cajero" or x.rol == "Sysadmin")
 def productosUpdate(request, id):
     producto = get_object_or_404(Producto, pk=id)
     return render(request, "formulario-productos.html", {"producto": producto, "categorias": Categoria.objects.all()}) 

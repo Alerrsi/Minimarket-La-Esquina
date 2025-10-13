@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import views
+from django.contrib.auth.decorators import login_required, user_passes_test
 from Proveedores.models import Proveedor
 from .serializers import CompraSerializer
 from .models import Compra, DetalleCompra
@@ -52,10 +53,15 @@ class CompraApiView(views.APIView):
 
 
 
+@login_required
+@user_passes_test(lambda x: x.rol == "Bodeguero" or x.rol == "Sysadmin")
 def comprasForm(request):
+
     return render(request, "formulario-compras.html")
 
 
+@login_required
+@user_passes_test(lambda x: x.rol == "Bodeguero" or x.rol == "Sysadmin")
 def comprasView(request):
     return render(request, "compras.html")
 
