@@ -32,7 +32,18 @@
                 <!-- Formulario - Ocupa 2 columnas -->
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
-                        <form method="POST" class="space-y-6" id="userForm">
+                        <!-- Mostrar errores no campo (non_field_errors) al inicio del formulario -->
+                        {% if form.non_field_errors %}
+                        <div class="mb-4">
+                            {% for err in form.non_field_errors %}
+                                <div class="bg-red-100 border border-red-200 text-red-700 px-4 py-2 rounded mb-2">
+                                    {{ err }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <form method="POST" class="space-y-6" id="userForm" enctype="multipart/form-data">
                             {% csrf_token %}
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -42,10 +53,17 @@
                                         Nombre <span class="required">*</span>
                                     </label>
                                     <input type="text" id="nombre" name="nombre"
-                                           value="{{ usuario.nombre|default:'' }}"
+                                           value="{{ form.nombre.value|default:'' }}"
                                            placeholder="Ejemplo: Juan"
                                            class="input-field"
                                            required>
+                                    {% if form.nombre.errors %}
+                                        <div class="error-message">
+                                            {% for error in form.nombre.errors %}
+                                                <small class="text-sm text-red-600">{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
 
                                 <!-- Apellido -->
@@ -54,10 +72,17 @@
                                         Apellido <span class="required">*</span>
                                     </label>
                                     <input type="text" id="apellido" name="apellido"
-                                           value="{{ usuario.apellido|default:'' }}"
+                                           value="{{ form.apellido.value|default:'' }}"
                                            placeholder="Ejemplo: Pérez"
                                            class="input-field"
                                            required>
+                                    {% if form.apellido.errors %}
+                                        <div class="error-message">
+                                            {% for error in form.apellido.errors %}
+                                                <small class="text-sm text-red-600">{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -67,10 +92,17 @@
                                     Email <span class="required">*</span>
                                 </label>
                                 <input type="email" id="email" name="email"
-                                       value="{{ usuario.email|default:'' }}"
+                                       value="{{ form.email.value|default:'' }}"
                                        placeholder="correo@ejemplo.com"
                                        class="input-field"
                                        required>
+                                {% if form.email.errors %}
+                                    <div class="error-message">
+                                        {% for error in form.email.errors %}
+                                            <small class="text-sm text-red-600">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <!-- Dirección -->
@@ -79,10 +111,17 @@
                                     Dirección <span class="required">*</span>
                                 </label>
                                 <input type="text" id="direccion" name="direccion"
-                                       value="{{ usuario.direccion|default:'' }}"
+                                       value="{{ form.direccion.value|default:'' }}"
                                        placeholder="Ejemplo: Calle Falsa 123"
                                        class="input-field"
                                        required>
+                                {% if form.direccion.errors %}
+                                    <div class="error-message">
+                                        {% for error in form.direccion.errors %}
+                                            <small class="text-sm text-red-600">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <!-- Rol -->
@@ -93,12 +132,19 @@
                                 <select id="rol" name="rol" class="input-field" required>
                                     <option value="">-- Seleccione un rol --</option>
                                     {% for r in roles %}
-                                        <option value="{{ r.id }}"
-                                            {% if usuario and usuario.rol.id == r.id %}selected{% endif %}>
-                                            {{ r.nombre }}
-                                        </option>
+                                    <option value="{{ r.id }}"
+                                        {% if form.rol.value|stringformat:"s" == r.id|stringformat:"s" or usuario and usuario.rol.id == r.id %}selected{% endif %}>
+                                        {{ r.nombre }}
+                                    </option>
                                     {% endfor %}
                                 </select>
+                                {% if form.rol.errors %}
+                                    <div class="error-message">
+                                        {% for error in form.rol.errors %}
+                                            <small class="text-sm text-red-600">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <!-- Contraseña -->
@@ -118,8 +164,17 @@
                                         </svg>
                                     </button>
                                 </div>
+                                
+                                <!-- Mensajes de error FUERA del div.relative -->
                                 {% if "Modificar" in titulo %}
                                 <p class="text-sm text-gray-500 mt-1">Dejar vacío para mantener la contraseña actual</p>
+                                {% endif %}
+                                {% if form.password.errors %}
+                                    <div class="error-message">
+                                        {% for error in form.password.errors %}
+                                            <small class="text-sm text-red-600">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
                                 {% endif %}
                             </div>
 
@@ -141,7 +196,16 @@
                                         </svg>
                                     </button>
                                 </div>
+                                
+                                <!-- Mensajes de error FUERA del div.relative -->
                                 <p class="text-sm text-red-600 mt-1 hidden" id="password-error">Las contraseñas no coinciden</p>
+                                {% if form.confirm_password.errors %}
+                                    <div class="error-message">
+                                        {% for error in form.confirm_password.errors %}
+                                            <small class="text-sm text-red-600">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                             {% endif %}
 
@@ -160,7 +224,7 @@
                                     ➕ Agregar Usuario
                                     {% endif %}
                                 </button>
-                                <a href="{% url 'usuario' %}" class="btn-secondary flex-1 py-3 text-center no-underline">
+                                <a href="{% url 'usuarioViews' %}" class="btn-secondary flex-1 py-3 text-center no-underline">
                                     <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                     </svg>
@@ -327,8 +391,100 @@
     });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("userForm"); 
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirm_password");
+
+    // Crear el div de error y colocarlo después del contenedor del campo de contraseña
+    const passwordErrorDiv = document.createElement("div");
+    passwordErrorDiv.classList.add("text-sm", "text-red-600", "mt-1");
+    
+    // Insertar después del contenedor del campo de contraseña (no dentro del relative)
+    if (passwordInput) {
+        const passwordContainer = passwordInput.closest('.form-group');
+        if (passwordContainer) {
+            // Insertar después del div.relative pero dentro del form-group
+            const relativeDiv = passwordContainer.querySelector('.relative');
+            if (relativeDiv) {
+                relativeDiv.parentNode.insertBefore(passwordErrorDiv, relativeDiv.nextSibling);
+            }
+        }
+    }
+
+    form.addEventListener("submit", (e) => {
+        const password = passwordInput.value;
+        const minLength = 8;
+        const hasLetter = /[A-Za-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>_-]/.test(password);
+
+        let errors = [];
+
+        // Solo validar si hay contraseña (para modificar puede estar vacío)
+        if (password.length > 0) {
+            if (password.length < minLength) {
+                errors.push(`La contraseña debe tener al menos ${minLength} caracteres.`);
+            }
+            if (!hasLetter) {
+                errors.push("La contraseña debe contener al menos una letra.");
+            }
+            if (!hasNumber) {
+                errors.push("La contraseña debe contener al menos un número.");
+            }
+            if (!hasSpecial) {
+                errors.push("La contraseña debe contener al menos un carácter especial.");
+            }
+        }
+
+        if (confirmPasswordInput) {
+            if (password !== confirmPasswordInput.value) {
+                errors.push("Las contraseñas no coinciden.");
+            }
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault();
+            passwordErrorDiv.innerHTML = errors.join("<br>");
+            passwordInput.focus();
+        } else {
+            passwordErrorDiv.innerHTML = "";
+        }
+    });
+});
+</script>
+
 <!-- Estilos adicionales para el formulario -->
 <style>
+    .relative {
+        position: relative;
+        display: flex;          
+        align-items: center;    
+    }
+
+    .input-field {
+        flex: 1;                
+        padding-right: 2.5rem;  
+        margin-bottom: 0;       
+    }
+
+    .toggle-password {
+        position: absolute;     
+        right: 0.75rem;
+        height: 100%;
+        display: flex;
+        align-items: center;    
+        background: none;
+        border: none;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .toggle-password:hover .eye-icon {
+        color: #6b7280;
+    }
+
     .form-group {
         margin-bottom: 1.5rem;
     }
@@ -439,21 +595,11 @@
         color: #111827;
     }
 
-    .toggle-password {
-        background: none;
-        border: none;
-        cursor: pointer;
-        outline: none;
-    }
-
-    .toggle-password:hover .eye-icon {
-        color: #6b7280;
-    }
-
     .hidden {
         display: none;
     }
 
+    /* estilos responsivos */
     @media (max-width: 1024px) {
         .grid-cols-1.lg\:grid-cols-3 {
             grid-template-columns: 1fr;
@@ -472,6 +618,16 @@
         .flex-col.sm\:flex-row {
             flex-direction: column;
         }
+    }
+
+    /* Estilo para mostrar errores */
+    .error-message {
+        margin-top: 0.25rem;
+    }
+    .error-message small {
+        display: block;
+        font-size: 0.85rem;
+        color: #dc2626;
     }
 </style>
 {% endblock %}

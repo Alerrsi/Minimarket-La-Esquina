@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
-import os
+from django.core.exceptions import ValidationError
+import os, re
 
 class Rol(models.Model):
     nombre = models.CharField('Nombre', max_length=100)
@@ -89,6 +90,23 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
+    
+    def clean(self):
+        # Validar email
+        if self.email:
+            if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', self.email):
+                raise ValidationError({'email': 'Formato de email inválido'})
+        
+        # Validar nombre y apellido
+        if self.nombre and not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', self.nombre):
+            raise ValidationError({'nombre': 'El nombre solo puede contener letras y espacios'})
+        
+        if self.apellido and not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', self.apellido):
+            raise ValidationError({'apellido': 'El apellido solo puede contener letras y espacios'})
+
+    def save(self, *args, **kwargs):
+        self.clean() 
+        super().save(*args, **kwargs)
 
     def get_profile_picture_url(self):
         if self.profile_picture and hasattr(self.profile_picture, 'url'):

@@ -54,14 +54,14 @@ class CompraApiView(views.APIView):
 
 
 @login_required
-@user_passes_test(lambda x: x.rol == "Bodeguero" or x.rol == "Sysadmin")
+@user_passes_test(lambda x: x.rol.nombre == "Bodeguero" or x.rol.nombre == "Sysadmin")
 def comprasForm(request):
 
     return render(request, "formulario-compras.html")
 
 
 @login_required
-@user_passes_test(lambda x: x.rol == "Bodeguero" or x.rol == "Sysadmin")
+@user_passes_test(lambda x: x.rol.nombre == "Bodeguero" or x.rol.nombre == "Sysadmin")
 def comprasView(request):
     return render(request, "compras.html")
 

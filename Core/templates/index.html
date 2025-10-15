@@ -15,20 +15,6 @@
                     <p class="text-xl text-muted max-w-3xl mx-auto mb-8 text-pretty">
                         Controla tu inventario de Minimarket de manera eficiente y segura.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="{% url 'productosForm' %}" class="bg-accent text-white px-8 py-3 rounded-lg font-medium hover:bg-lime-600 transition-colors inline-flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            Agregar Producto
-                        </a>
-                        <a href="{% url 'productosView' %}" class="bg-white text-primary border-2 border-primary px-8 py-3 rounded-lg font-medium hover:bg-secondary transition-colors inline-flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                            Ver Inventario
-                        </a>
-                    </div>
                 </div>
             </div>
         </section>
@@ -122,55 +108,6 @@
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Quick Actions -->
-        <section class="py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-heading font-bold text-gray-900 mb-4">Acciones Rápidas</h2>
-                    <p class="text-xl text-muted">Accede rápidamente a las funciones más utilizadas</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <a href="formulario.html" class="group bg-gradient-to-br from-primary to-green-800 rounded-xl p-6 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-heading font-semibold mb-2">Agregar Producto</h3>
-                        <p class="text-green-100">Registra nuevos productos en el sistema</p>
-                    </a>
-                    <a href="tabla.html" class="group bg-gradient-to-br from-accent to-lime-600 rounded-xl p-6 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-heading font-semibold mb-2">Ver Inventario</h3>
-                        <p class="text-lime-100">Consulta el estado actual del inventario</p>
-                    </a>
-                    <a href="#" class="group bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-6 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-heading font-semibold mb-2">Generar Reporte</h3>
-                        <p class="text-blue-100">Crea reportes detallados del inventario</p>
-                    </a>
-                </div>
-            </div>
-        </section>
     </main>
     
 {% endblock main %}

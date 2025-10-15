@@ -89,6 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {'min_length': 8},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -96,6 +97,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+    {
+        'NAME': 'Usuarios.validators.StrongPasswordValidator'
+        },
 ]
 
 
@@ -132,7 +136,7 @@ STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 #Login settings
 AUTH_USER_MODEL = 'Login.Usuario'
 
-LOGIN_REDIRECT_URL = 'direct'
+LOGIN_REDIRECT_URL = 'index'
 
 LOGIN_URL = 'accounts/login/'
 
