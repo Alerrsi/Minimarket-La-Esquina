@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<main class="flex-1">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-secondary to-white py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-lg text-muted">
+                    Rellene los campos segun corresponda
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="py-8 bg-white">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
+                <form method="POST" class="space-y-6" id="proveedorForm">
+                    {% csrf_token %}
+                    {{ form.as_p }} 
+                    
+                    <!-- Botones de acción - Centrado -->
+                    <div class="flex justify-center pt-4">
+                        <button type="submit" class="btn-primary py-3 px-8 text-center no-underline bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+                            Confirmar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
