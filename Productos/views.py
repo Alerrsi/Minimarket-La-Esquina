@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from rest_framework import viewsets, status
-from .models import Producto, Categoria
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .serializers import ProductoSerializer, CategoriaSerializer
 from rest_framework.response import Response
+from .models import Producto, Categoria
+from .permissions import ProductoPermission
 
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
+    permission_classes = [ProductoPermission]
 
 
     def retrieve(self, request,pk=None,  *args, **kwargs):
@@ -21,6 +24,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     # clase que serializa los datos como json()
     serializer_class = ProductoSerializer
+    permission_classes = [ProductoPermission]
 
     # metodo de para enviar todos los registros mediante GET
     def list(self, request):
@@ -31,7 +35,6 @@ class ProductoViewSet(viewsets.ModelViewSet):
     # metodo para crear productos mediante POST
     def create(self, request):
         # deserializampos los datos
-        print(request.data)
         serializer = ProductoSerializer(data = request.data, context = {"metodo": "create"})
 
         # guardamos el producto si cumple con las validaciones
@@ -70,18 +73,18 @@ class ProductoViewSet(viewsets.ModelViewSet):
 
 
 @login_required
-@user_passes_test(lambda x: x.rol.nombre == "Cajero" or x.rol.nombre == "Sysadmin" or x.rol.nombre == "Bodeguero")
+@user_passes_test(lambda x: x.rol.nombre == "Administrador" or x.rol.nombre == "Sysadmin" or x.rol.nombre == "Bodeguero")
 def productosView(request):
     return render(request, "productos.html")
 
 
 @login_required
-@user_passes_test(lambda x: x.rol.nombre == "Cajero" or x.rol.nombre == "Sysadmin" or x.rol.nombre == "Bodeguero")
+@user_passes_test(lambda x: x.rol.nombre == "Administrador" or x.rol.nombre == "Sysadmin" or x.rol.nombre == "Bodeguero")
 def productosForm(request):
     return render(request, "formulario-productos.html", {"categorias": Categoria.objects.all()})
 
 @login_required
-@user_passes_test(lambda x: x.rol.nombre == "Cajero" or x.rol.nombre == "Sysadmin" or x.rol.nombre == "Bodeguero")
+@user_passes_test(lambda x: x.rol.nombre == "Administrador" or x.rol.nombre == "Sysadmin" or x.rol.nombre == "Bodeguero")
 def productosUpdate(request, id):
     producto = get_object_or_404(Producto, pk=id)
     return render(request, "formulario-productos.html", {"producto": producto, "categorias": Categoria.objects.all()}) 

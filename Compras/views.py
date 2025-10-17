@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import views
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required, user_passes_test
 from Proveedores.models import Proveedor
 from .serializers import CompraSerializer
@@ -10,6 +11,7 @@ from .models import Compra, DetalleCompra
 
 class CompraApiView(views.APIView):
     
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = CompraSerializer(data = request.data)
