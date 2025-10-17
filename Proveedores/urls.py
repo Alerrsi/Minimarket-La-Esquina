@@ -10,7 +10,7 @@ router = routers.DefaultRouter()
 router.register("proveedores", ProveedorViewSet, basename="proveedores")
 
 urlpatterns = [
-    path("api/proveedores", include(router.urls)),
+    path("api/", include(router.urls)),
     path('proveedores', proveedorView, name ='proveedorView'),
     path('proveedores/formulario', proveedorForm, name="proveedorForm") ,
     path('proveedores/formulario/<int:id>/', proveedorMod, name='editar_proveedor'),
