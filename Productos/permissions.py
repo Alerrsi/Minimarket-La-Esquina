@@ -7,6 +7,9 @@ class ProductoPermission(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         
+        if request.user.is_anonymous:
+            return False
+        
         # roles que pueden acceder a la funcion
         # (SysAdmin, Administrador, Bodeguero)
         roles = [0, 1, 2]
