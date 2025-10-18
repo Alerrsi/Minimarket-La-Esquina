@@ -7,11 +7,11 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from Proveedores.models import Proveedor
 from .serializers import CompraSerializer
 from .models import Compra, DetalleCompra
-
+from .permissions import CompraPermission
 
 class CompraApiView(views.APIView):
     
-    permission_classes = [IsAuthenticated]
+    permission_classes = [CompraPermission]
 
     def post(self, request):
         serializer = CompraSerializer(data = request.data)

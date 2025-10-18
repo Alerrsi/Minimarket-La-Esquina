@@ -12,6 +12,7 @@ class DetalleCompraSerializer(serializers.Serializer):
     producto = serializers.IntegerField(write_only = True)
     cantidad = serializers.IntegerField()
     costo_unitario = serializers.FloatField()
+    
 
 
     def validate_producto(self, value):
