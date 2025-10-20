@@ -2,16 +2,16 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 
-class Venta(BasePermission):
-
+class VentasPermisos(BasePermission):
     def has_permission(self, request, view):
-         
-         if request.method in SAFE_METHODS:
-              return True
-         
 
-         roles = [0, 3]
+        if request.method in SAFE_METHODS:
+            return True
+        if request.user.is_anonymous:
+            return False
 
-         return request.user.rol.id in roles
+        roles = [0, 3]
+
+        return request.user.rol.id in roles
     
     

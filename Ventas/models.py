@@ -24,6 +24,6 @@ class DetalleVenta(models.Model):
         db_table = "detalles_ventas"
     
     def __str__(self):
-        return f"{self.id_producto} {self.cantidad}"
+        return f"{self.producto} {self.cantidad}"
 
 # Create your models here.

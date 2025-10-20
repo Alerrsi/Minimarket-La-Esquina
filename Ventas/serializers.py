@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from Productos.models import Producto
 from .models import Venta, DetalleVenta
+from Login.models import Usuario
 
 class DetalleVentaSerializer(serializers.Serializer):
     nombre_producto = serializers.CharField(read_only= True)
@@ -30,11 +31,13 @@ class DetalleVentaSerializer(serializers.Serializer):
 
 class VentaSerializer(serializers.Serializer):
     total = serializers.FloatField(read_only = True)
+    usuario = serializers.IntegerField(write_only = True, required = False)
     detalle = DetalleVentaSerializer(many=True, write_only=True)
 
     def create(self, validated_data):
         # quitamos los productos y almacenamos en otra variable
         detalles = validated_data.pop("detalle", [])
+        usuario_id = validated_data.pop("usuario", None)
 
         # calculamos el costo total de cada productos
         total_venta = 0
@@ -44,6 +47,9 @@ class VentaSerializer(serializers.Serializer):
         venta = Venta()
         
         venta.save()
+
+        if usuario_id:
+            venta.usuario = Usuario.objects.get(pk=usuario_id)
         
         for detalle in detalles:
             # Se accede al producto

@@ -1,19 +1,28 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import views
+from .permissions import VentasPermisos
 from .serializers import VentaSerializer,DetalleVentaSerializer
-from .models import Venta, DetalleVenta
+from .models import Venta, DetalleVenta, Producto
 
 
 class VentaApiView(views.APIView):
     
+    permission_classes = [VentasPermisos]
 
     def post(self, request):
-        print("Request data:", request.data)  # Debug what you're receiving
+        print("Request data:", request.data)
         serializer = VentaSerializer(data=request.data)
         if serializer.is_valid():
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            venta = serializer.save()
+            return Response({
+                'id': venta.id,
+                'total': venta.total,
+                'fecha': venta.fecha
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
         ventas = Venta.objects.all()
@@ -21,15 +30,29 @@ class VentaApiView(views.APIView):
         return Response(serializer.data)
 
 
-def ventasForm(request):
-    return render(request, "formulario-ventas.html")
-
-
 def ventasView(request):
-    return render(request, "ventas.html")
+    # Obtener todas las ventas
+    ventas = Venta.objects.all().order_by('-fecha')
+    
+    # Calcular estadísticas
+    total_ingresos = sum(venta.total for venta in ventas if venta.total)
+    promedio_venta = total_ingresos / len(ventas) if ventas else 0
+    
+    context = {
+        'ventas': ventas,
+        'total_ingresos': total_ingresos,
+        'promedio_venta': promedio_venta,
+    }
+    
+    return render(request, 'ventas.html', context)
 
 
-
-
+def ventasForm(request):
+    Productos = Producto.objects.all()[:8]
+    context = {
+        'Productos': Productos,
+        'usuario_id': request.user.id
+    }
+    return render(request, "formulario-ventas.html", context)
 
 

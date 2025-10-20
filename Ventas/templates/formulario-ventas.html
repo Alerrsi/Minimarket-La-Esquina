@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block main %}
+
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+        <h1 class="text-3xl font-heading font-bold text-gray-900 mb-2">Panel de Venta</h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+            <!-- Panel Izquierdo - Búsqueda y Productos -->
+            <div class="lg:col-span-2 space-y-4">
+                <!-- Búsqueda de Productos -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div class="flex gap-3">
+                        <div class="flex-1">
+                            <input 
+                                type="text" 
+                                id="buscar-producto" 
+                                placeholder="Buscar por nombre o código de barras..." 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
+                                autofocus
+                            >
+                        </div>
+                        <button onclick="buscarProducto()" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-green-800 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Productos Rápidos -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <h3 class="text-lg font-heading font-semibold text-gray-900 mb-4">Productos Frecuentes</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {% for producto in Productos %}
+                    <button onclick="agregarProductoVenta({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }})"
+                            class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
+                        <div class="font-medium text-gray-900 text-sm">{{ producto.nombre }}</div>
+                        <div class="text-primary font-semibold mt-1">${{ producto.precio }}</div>
+                    </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            
+                <!-- Carrito de Compras -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-heading font-semibold text-gray-900">Carrito de Venta</h3>
+                        <button onclick="limpiarCarrito()" class="text-red-600 hover:text-red-800 text-sm font-medium">
+                            Limpiar Todo
+                        </button>
+                    </div>
+                    
+                    <div id="carrito-items" class="space-y-2 max-h-64 overflow-y-auto">
+                        <div class="text-center py-8 text-gray-400">
+                            <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <p>El carrito está vacío</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Derecho - Resumen y Pago -->
+            <div class="lg:col-span-1 space-y-4">
+                <!-- Resumen de Venta -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
+                    <h3 class="text-lg font-heading font-semibold text-gray-900 mb-4">Resumen de Venta</h3>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-gray-700">
+                            <span>Subtotal:</span>
+                            <span id="subtotal-venta" class="font-medium">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-700">
+                            <span>Descuento:</span>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="descuento-input" min="0" max="100" value="0" onchange="actualizarTotalVenta()" class="w-16 px-2 py-1 border border-gray-300 rounded text-sm text-right">
+                                <span class="text-sm">%</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-gray-700">
+                            <span>IVA (16%):</span>
+                            <span id="iva-venta" class="font-medium">$0.00</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-heading font-bold text-gray-900">Total:</span>
+                                <span id="total-venta" class="text-3xl font-heading font-bold text-primary">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Método de Pago -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
+                        <select id="metodo-pago-venta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta">Tarjeta</option>
+                            <option value="transferencia">Transferencia</option>
+                        </select>
+                    </div>
+
+                    <!-- Monto Recibido (solo para efectivo) -->
+                    <div id="efectivo-section" class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Monto Recibido</label>
+                        <input type="number" id="monto-recibido" min="0" step="0.01" placeholder="0.00" onchange="calcularCambio()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-lg">
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Cambio:</span>
+                            <span id="cambio-venta" class="text-xl font-semibold text-gray-900">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="space-y-3">
+                        <button onclick="procesarVenta()" class="w-full bg-primary text-white py-4 rounded-lg font-heading font-semibold text-lg hover:bg-green-800 transition-colors flex items-center justify-center">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Procesar Venta
+                        </button>
+                        <button onclick="limpiarCarrito()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                            Cancelar Venta
+                        </button>
+                    </div>
+
+                    <!-- Info del Cajero -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="text-sm text-gray-600">
+                            <div class="flex justify-between mb-1">
+                                <span>Caja:</span>
+                                <span class="font-medium text-gray-900">Caja #1</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Fecha:</span>
+                                <span class="font-medium text-gray-900" id="fecha-actual"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <script>
+        const usuarioId = {{ usuario_id|default:"null" }};
+        let carrito = [];
+        let contadorItems = 0;
+
+        // Establecer fecha actual
+        document.getElementById('fecha-actual').textContent = new Date().toLocaleDateString('es-ES');
+
+        // Mostrar/ocultar sección de efectivo según método de pago
+        document.getElementById('metodo-pago-venta').addEventListener('change', function() {
+            const efectivoSection = document.getElementById('efectivo-section');
+            if (this.value === 'efectivo') {
+                efectivoSection.style.display = 'block';
+            } else {
+                efectivoSection.style.display = 'none';
+            }
+        });
+
+        // Buscar producto con Enter
+        document.getElementById('buscar-producto').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                buscarProducto();
+            }
+        });
+
+        function buscarProducto() {
+            const busqueda = document.getElementById('buscar-producto').value.trim();
+            if (busqueda) {
+                // Simulación de búsqueda - en producción buscaría en base de datos
+                alert(`Buscando: ${busqueda}`);
+                document.getElementById('buscar-producto').value = '';
+            }
+        }
+
+        function agregarProductoVenta(id, nombre, precio) {
+            contadorItems++;
+            const item = {
+                id: contadorItems,
+                producto_id: id,   // ✅ now 'id' exists
+                nombre: nombre,
+                precio: precio,
+                cantidad: 1
+            };
+        
+            // Verificar si el producto ya está en el carrito
+            const existente = carrito.find(i => i.producto_id === id);
+            if (existente) {
+                existente.cantidad++;
+            } else {
+                carrito.push(item);
+            }
+        
+            actualizarCarrito();
+            actualizarTotalVenta();
+        }
+
+        function actualizarCarrito() {
+            const carritoContainer = document.getElementById('carrito-items');
+            
+            if (carrito.length === 0) {
+                carritoContainer.innerHTML = `
+                    <div class="text-center py-8 text-gray-400">
+                        <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <p>El carrito está vacío</p>
+                    </div>
+                `;
+                return;
+            }
+
+            carritoContainer.innerHTML = carrito.map(item => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900">${item.nombre}</div>
+                        <div class="text-sm text-gray-600">$${item.precio.toFixed(2)} c/u</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2">
+                            <button onclick="cambiarCantidad(${item.id}, -1)" class="w-7 h-7 bg-gray-200 rounded hover:bg-gray-300 flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                </svg>
+                            </button>
+                            <span class="w-8 text-center font-medium">${item.cantidad}</span>
+                            <button onclick="cambiarCantidad(${item.id}, 1)" class="w-7 h-7 bg-gray-200 rounded hover:bg-gray-300 flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="w-20 text-right font-semibold text-gray-900">
+                            $${(item.precio * item.cantidad).toFixed(2)}
+                        </div>
+                        <button onclick="eliminarItem(${item.id})" class="text-red-600 hover:text-red-800">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function cambiarCantidad(id, cambio) {
+            const item = carrito.find(i => i.id === id);
+            if (item) {
+                item.cantidad += cambio;
+                if (item.cantidad <= 0) {
+                    eliminarItem(id);
+                } else {
+                    actualizarCarrito();
+                    actualizarTotalVenta();
+                }
+            }
+        }
+
+        function eliminarItem(id) {
+            carrito = carrito.filter(i => i.id !== id);
+            actualizarCarrito();
+            actualizarTotalVenta();
+        }
+
+        function limpiarCarrito() {
+            if (carrito.length > 0 && confirm('¿Desea limpiar el carrito?')) {
+                carrito = [];
+                actualizarCarrito();
+                actualizarTotalVenta();
+                document.getElementById('monto-recibido').value = '';
+                document.getElementById('descuento-input').value = '0';
+            }
+        }
+
+        function actualizarTotalVenta() {
+            const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            const descuento = parseFloat(document.getElementById('descuento-input').value) || 0;
+            const subtotalConDescuento = subtotal * (1 - descuento / 100);
+            const iva = subtotalConDescuento * 0.16;
+            const total = subtotalConDescuento + iva;
+
+            document.getElementById('subtotal-venta').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('iva-venta').textContent = `$${iva.toFixed(2)}`;
+            document.getElementById('total-venta').textContent = `$${total.toFixed(2)}`;
+
+            calcularCambio();
+        }
+
+        function calcularCambio() {
+            const total = parseFloat(document.getElementById('total-venta').textContent.replace('$', ''));
+            const recibido = parseFloat(document.getElementById('monto-recibido').value) || 0;
+            const cambio = Math.max(0, recibido - total);
+            document.getElementById('cambio-venta').textContent = `$${cambio.toFixed(2)}`;
+        }
+
+        async function procesarVenta() {
+            if (carrito.length === 0) {
+                alert('El carrito está vacío');
+                return;
+            }
+        
+            const total = parseFloat(document.getElementById('total-venta').textContent.replace('$', ''));
+            const metodoPago = document.getElementById('metodo-pago-venta').value;
+
+            if (metodoPago === 'efectivo') {
+                const recibido = parseFloat(document.getElementById('monto-recibido').value) || 0;
+                if (recibido < total) {
+                    alert('El monto recibido es insuficiente');
+                    return;
+                }
+            }
+        
+            if (!confirm(`¿Confirmar venta por $${total.toFixed(2)}?`)) {
+                return;
+            }
+        
+            // Aquí armamos el JSON para la API
+            const ventaData = {
+                usuario: usuarioId,
+                detalle: carrito.map(item => ({
+                    producto: item.producto_id,
+                    cantidad: item.cantidad
+                }))
+            };
+        
+            try {
+                const response = await fetch('/api/ventas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(ventaData)
+                });
+            
+                if (!response.ok) {
+                    const error = await response.json();
+                    console.error("Error de la API:", error);
+                    alert("Error al guardar la venta. Revisa la consola.");
+                    return;
+                }
+            
+                const data = await response.json();
+                alert(`✅ Venta registrada con éxito (ID: ${data.id})\nTotal: $${data.total.toFixed(2)}`);
+
+                limpiarCarrito();
+                actualizarCarrito();
+                actualizarTotalVenta();
+            } catch (error) {
+                console.error("Error al procesar venta:", error);
+                alert("Error de conexión con el servidor.");
+            }
+        }
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+</script>
+{% endblock %}
+    

@@ -1,356 +1,189 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block main %}
-
-
     <!-- Main Content -->
-    <main class="flex-1 max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <h1 class="text-3xl font-heading font-bold text-gray-900 mb-2">Panel de Venta</h1>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-            <!-- Panel Izquierdo - Búsqueda y Productos -->
-            <div class="lg:col-span-2 space-y-4">
-                <!-- Búsqueda de Productos -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                    <div class="flex gap-3">
-                        <div class="flex-1">
-                            <input 
-                                type="text" 
-                                id="buscar-producto" 
-                                placeholder="Buscar por nombre o código de barras..." 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
-                                autofocus
-                            >
-                        </div>
-                        <button onclick="buscarProducto()" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-green-800 transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <main class="flex-1 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h1 class="text-3xl font-heading font-bold text-gray-900 mb-2">Gestión de Ventas</h1>
+                        <p class="text-muted">Gestiona y consulta las ventas realizadas</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex space-x-3">
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors inline-flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Exportar
+                        </button>
+                        <a href="{% url 'ventasForm' %}" class="bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-lime-600 transition-colors inline-flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Registrar Venta
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Buscar Venta</label>
+                        <div class="relative">
+                            <input type="text" placeholder="ID de venta o usuario..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fecha Desde</label>
+                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fecha Hasta</label>
+                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-green-800 transition-colors">
+                            Filtrar
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Productos Rápidos -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                    <h3 class="text-lg font-heading font-semibold text-gray-900 mb-4">Productos Frecuentes</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                        <button onclick="agregarProductoVenta('Paracetamol 500mg', 2.50)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Monster Ultra Energy GOLD </div>
-                            <div class="text-primary font-semibold mt-1">$2.00</div>
-                        </button>
-                        <button onclick="agregarProductoVenta('Ibuprofeno 400mg', 3.75)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Monster Energy Ultra Paradice</div>
-                            <div class="text-primary font-semibold mt-1">$2.00</div>
-                        </button>
-                        <button onclick="agregarProductoVenta('Amoxicilina 500mg', 8.90)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Arroz Tucapel 1 kg</div>
-                            <div class="text-primary font-semibold mt-1">$1.5</div>
-                        </button>
-                        <button onclick="agregarProductoVenta('Omeprazol 20mg', 5.25)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Shampoo Sedal 200ml</div>
-                            <div class="text-primary font-semibold mt-1">$1.2</div>
-                        </button>
-                        <button onclick="agregarProductoVenta('Losartán 50mg', 6.80)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Pan Bimbo 500g</div>
-                            <div class="text-primary font-semibold mt-1">1.4</div>
-                        </button>
-                        <button onclick="agregarProductoVenta('Metformina 850mg', 4.50)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Paracetamol</div>
-                            <div class="text-primary font-semibold mt-1">$1.00</div>
-                        </button>
-                        <button onclick="agregarProductoVenta('Atorvastatina 20mg', 7.20)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Tableton Grande</div>
-                            <div class="text-primary font-semibold mt-1">$2.5</div>
-                        </button>
-                        <button onclick="agregarProductoVenta('Aspirina 100mg', 1.80)" class="bg-secondary border border-green-200 p-4 rounded-lg hover:bg-green-100 transition-colors text-left">
-                            <div class="font-medium text-gray-900 text-sm">Aspirina</div>
-                            <div class="text-primary font-semibold mt-1">$1.80</div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Carrito de Compras -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-heading font-semibold text-gray-900">Carrito de Venta</h3>
-                        <button onclick="limpiarCarrito()" class="text-red-600 hover:text-red-800 text-sm font-medium">
-                            Limpiar Todo
-                        </button>
-                    </div>
-                    
-                    <div id="carrito-items" class="space-y-2 max-h-64 overflow-y-auto">
-                        <div class="text-center py-8 text-gray-400">
-                            <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            <!-- Stats Cards - Updated to use 3 columns instead of 4 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                             </svg>
-                            <p>El carrito está vacío</p>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-muted">Total Ventas</p>
+                            <p class="text-2xl font-heading font-bold text-gray-900">{{ ventas|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-muted">Ingresos Totales</p>
+                            <p class="text-2xl font-heading font-bold text-gray-900">${{ total_ingresos|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-muted">Venta Promedio</p>
+                            <p class="text-2xl font-heading font-bold text-gray-900">${{ promedio_venta|floatformat:2 }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel Derecho - Resumen y Pago -->
-            <div class="lg:col-span-1 space-y-4">
-                <!-- Resumen de Venta -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
-                    <h3 class="text-lg font-heading font-semibold text-gray-900 mb-4">Resumen de Venta</h3>
-                    
-                    <div class="space-y-3 mb-6">
-                        <div class="flex justify-between text-gray-700">
-                            <span>Subtotal:</span>
-                            <span id="subtotal-venta" class="font-medium">$0.00</span>
-                        </div>
-                        <div class="flex justify-between text-gray-700">
-                            <span>Descuento:</span>
-                            <div class="flex items-center gap-2">
-                                <input type="number" id="descuento-input" min="0" max="100" value="0" onchange="actualizarTotalVenta()" class="w-16 px-2 py-1 border border-gray-300 rounded text-sm text-right">
-                                <span class="text-sm">%</span>
-                            </div>
-                        </div>
-                        <div class="flex justify-between text-gray-700">
-                            <span>IVA (16%):</span>
-                            <span id="iva-venta" class="font-medium">$0.00</span>
-                        </div>
-                        <div class="border-t border-gray-200 pt-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-heading font-bold text-gray-900">Total:</span>
-                                <span id="total-venta" class="text-3xl font-heading font-bold text-primary">$0.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Método de Pago -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
-                        <select id="metodo-pago-venta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option value="efectivo">Efectivo</option>
-                            <option value="tarjeta">Tarjeta</option>
-                            <option value="transferencia">Transferencia</option>
-                        </select>
-                    </div>
-
-                    <!-- Monto Recibido (solo para efectivo) -->
-                    <div id="efectivo-section" class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Monto Recibido</label>
-                        <input type="number" id="monto-recibido" min="0" step="0.01" placeholder="0.00" onchange="calcularCambio()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-lg">
-                        <div class="mt-2 flex justify-between items-center">
-                            <span class="text-sm text-gray-600">Cambio:</span>
-                            <span id="cambio-venta" class="text-xl font-semibold text-gray-900">$0.00</span>
-                        </div>
-                    </div>
-
-                    <!-- Botones de Acción -->
-                    <div class="space-y-3">
-                        <button onclick="procesarVenta()" class="w-full bg-primary text-white py-4 rounded-lg font-heading font-semibold text-lg hover:bg-green-800 transition-colors flex items-center justify-center">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Procesar Venta
+            <!-- Table -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-heading font-semibold text-gray-900">Lista de Ventas</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200" id="main-table">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Productos</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for venta in ventas %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ venta.id }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ venta.fecha|date:"d/m/Y H:i" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {% if venta.usuario %}
+                                        {{ venta.usuario.nombre }}
+                                    {% else %}
+                                        <span class="text-gray-400">Anónimo</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${{ venta.total|floatformat:2 }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    {% for detalle in venta.detalleventa_set.all %}
+                                        {{ detalle.id_producto.nombre }} ({{ detalle.cantidad }})<br>
+                                    {% empty %}
+                                        <span class="text-gray-400">Sin productos</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                                    No hay ventas registradas
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="bg-white px-6 py-3 border-t border-gray-200 flex items-center justify-between">
+                    <div class="flex-1 flex justify-between sm:hidden">
+                        <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Anterior
                         </button>
-                        <button onclick="limpiarCarrito()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors">
-                            Cancelar Venta
+                        <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Siguiente
                         </button>
                     </div>
-
-                    <!-- Info del Cajero -->
-                    <div class="mt-6 pt-6 border-t border-gray-200">
-                        <div class="text-sm text-gray-600">
-                            <div class="flex justify-between mb-1">
-                                <span>Caja:</span>
-                                <span class="font-medium text-gray-900">Caja #1</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Fecha:</span>
-                                <span class="font-medium text-gray-900" id="fecha-actual"></span>
-                            </div>
+                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-gray-700">
+                                Mostrando <span class="font-medium">1</span> a <span class="font-medium">{{ ventas|length }}</span> de <span class="font-medium">{{ ventas|length }}</span> resultados
+                            </p>
+                        </div>
+                        <div>
+                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                                <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button class="bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">1</button>
+                                <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">2</button>
+                                <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">3</button>
+                                <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </nav>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
-    <script>
-        let carrito = [];
-        let contadorItems = 0;
-
-        // Establecer fecha actual
-        document.getElementById('fecha-actual').textContent = new Date().toLocaleDateString('es-ES');
-
-        // Mostrar/ocultar sección de efectivo según método de pago
-        document.getElementById('metodo-pago-venta').addEventListener('change', function() {
-            const efectivoSection = document.getElementById('efectivo-section');
-            if (this.value === 'efectivo') {
-                efectivoSection.style.display = 'block';
-            } else {
-                efectivoSection.style.display = 'none';
-            }
-        });
-
-        // Buscar producto con Enter
-        document.getElementById('buscar-producto').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                buscarProducto();
-            }
-        });
-
-        function buscarProducto() {
-            const busqueda = document.getElementById('buscar-producto').value.trim();
-            if (busqueda) {
-                // Simulación de búsqueda - en producción buscaría en base de datos
-                alert(`Buscando: ${busqueda}`);
-                document.getElementById('buscar-producto').value = '';
-            }
-        }
-
-        function agregarProductoVenta(nombre, precio) {
-            contadorItems++;
-            const item = {
-                id: contadorItems,
-                nombre: nombre,
-                precio: precio,
-                cantidad: 1
-            };
-
-            // Verificar si el producto ya está en el carrito
-            const existente = carrito.find(i => i.nombre === nombre);
-            if (existente) {
-                existente.cantidad++;
-            } else {
-                carrito.push(item);
-            }
-
-            actualizarCarrito();
-            actualizarTotalVenta();
-        }
-
-        function actualizarCarrito() {
-            const carritoContainer = document.getElementById('carrito-items');
-            
-            if (carrito.length === 0) {
-                carritoContainer.innerHTML = `
-                    <div class="text-center py-8 text-gray-400">
-                        <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                        <p>El carrito está vacío</p>
-                    </div>
-                `;
-                return;
-            }
-
-            carritoContainer.innerHTML = carrito.map(item => `
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <div class="flex-1">
-                        <div class="font-medium text-gray-900">${item.nombre}</div>
-                        <div class="text-sm text-gray-600">$${item.precio.toFixed(2)} c/u</div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center gap-2">
-                            <button onclick="cambiarCantidad(${item.id}, -1)" class="w-7 h-7 bg-gray-200 rounded hover:bg-gray-300 flex items-center justify-center">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                                </svg>
-                            </button>
-                            <span class="w-8 text-center font-medium">${item.cantidad}</span>
-                            <button onclick="cambiarCantidad(${item.id}, 1)" class="w-7 h-7 bg-gray-200 rounded hover:bg-gray-300 flex items-center justify-center">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="w-20 text-right font-semibold text-gray-900">
-                            $${(item.precio * item.cantidad).toFixed(2)}
-                        </div>
-                        <button onclick="eliminarItem(${item.id})" class="text-red-600 hover:text-red-800">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function cambiarCantidad(id, cambio) {
-            const item = carrito.find(i => i.id === id);
-            if (item) {
-                item.cantidad += cambio;
-                if (item.cantidad <= 0) {
-                    eliminarItem(id);
-                } else {
-                    actualizarCarrito();
-                    actualizarTotalVenta();
-                }
-            }
-        }
-
-        function eliminarItem(id) {
-            carrito = carrito.filter(i => i.id !== id);
-            actualizarCarrito();
-            actualizarTotalVenta();
-        }
-
-        function limpiarCarrito() {
-            if (carrito.length > 0 && confirm('¿Desea limpiar el carrito?')) {
-                carrito = [];
-                actualizarCarrito();
-                actualizarTotalVenta();
-                document.getElementById('monto-recibido').value = '';
-                document.getElementById('descuento-input').value = '0';
-            }
-        }
-
-        function actualizarTotalVenta() {
-            const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-            const descuento = parseFloat(document.getElementById('descuento-input').value) || 0;
-            const subtotalConDescuento = subtotal * (1 - descuento / 100);
-            const iva = subtotalConDescuento * 0.16;
-            const total = subtotalConDescuento + iva;
-
-            document.getElementById('subtotal-venta').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('iva-venta').textContent = `$${iva.toFixed(2)}`;
-            document.getElementById('total-venta').textContent = `$${total.toFixed(2)}`;
-
-            calcularCambio();
-        }
-
-        function calcularCambio() {
-            const total = parseFloat(document.getElementById('total-venta').textContent.replace('$', ''));
-            const recibido = parseFloat(document.getElementById('monto-recibido').value) || 0;
-            const cambio = Math.max(0, recibido - total);
-            document.getElementById('cambio-venta').textContent = `$${cambio.toFixed(2)}`;
-        }
-
-        function procesarVenta() {
-            if (carrito.length === 0) {
-                alert('El carrito está vacío');
-                return;
-            }
-
-            const total = parseFloat(document.getElementById('total-venta').textContent.replace('$', ''));
-            const metodoPago = document.getElementById('metodo-pago-venta').value;
-            
-            if (metodoPago === 'efectivo') {
-                const recibido = parseFloat(document.getElementById('monto-recibido').value) || 0;
-                if (recibido < total) {
-                    alert('El monto recibido es insuficiente');
-                    return;
-                }
-            }
-
-            if (confirm(`¿Confirmar venta por $${total.toFixed(2)}?`)) {
-                alert('Venta procesada exitosamente\n\n¡Imprimiendo ticket!');
-                limpiarCarrito();
-                carrito = [];
-                actualizarCarrito();
-                actualizarTotalVenta();
-                document.getElementById('monto-recibido').value = '';
-                document.getElementById('descuento-input').value = '0';
-            }
-        }
-    </script>
-
 {% endblock main %}
-    
