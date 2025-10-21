@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from Login.models import Usuario, Rol
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from .forms import UsuarioForm, ProfileForm
 
 @login_required
+@user_passes_test(lambda x:x.rol.nombre == "Sysadmin")
 def Usuarioviews(request):
     if request.user.rol.nombre.strip().lower() == "sysadmin" or request.user.is_staff:
         users = Usuario.objects.all()
@@ -14,6 +15,7 @@ def Usuarioviews(request):
         return redirect("index")
 
 @login_required
+@user_passes_test(lambda x:x.rol.nombre == "Sysadmin")
 def UsuarioAdd(request):
     if request.user.rol.nombre.strip().lower() == "sysadmin" or request.user.is_staff:
         if request.method == 'POST':
@@ -64,6 +66,7 @@ def UsuarioAdd(request):
         return redirect("index")
 
 @login_required
+@user_passes_test(lambda x:x.rol.nombre == "Sysadmin")
 def UsuarioMod(request, id):
     if request.user.rol.nombre.strip().lower() == "sysadmin" or request.user.is_staff:
         user = get_object_or_404(Usuario, id=id)
@@ -119,6 +122,7 @@ def UsuarioMod(request, id):
         return redirect("index")
 
 @login_required
+@user_passes_test(lambda x:x.rol.nombre == "Sysadmin")
 def UsuarioDel(request, id):
     if request.user.rol.nombre.strip().lower() == "sysadmin" or request.user.is_staff:
         user = get_object_or_404(Usuario, id=id)
@@ -128,6 +132,7 @@ def UsuarioDel(request, id):
         return redirect("index")
 
 @login_required
+
 def ViewProfile(request):
     user = request.user
     

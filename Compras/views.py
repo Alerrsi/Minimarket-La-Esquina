@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework import views
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required, user_passes_test
-from Proveedores.models import Proveedor
 from .serializers import CompraSerializer
 from .models import Compra, DetalleCompra
 from .permissions import CompraPermission
@@ -65,7 +64,13 @@ def comprasForm(request):
 @login_required
 @user_passes_test(lambda x: x.rol.nombre == "Bodeguero" or x.rol.nombre == "Sysadmin")
 def comprasView(request):
-    return render(request, "compras.html")
+    compras = Compra.objects.all()
+    cantidad_compras = Compra.objects.all().count()
+
+    costo_total = sum(compra.total for compra in compras if compra.total)
+    promedio_compra = costo_total / len(compras) if costo_total else 0
+    
+    return render(request, "compras.html", {"compras": cantidad_compras, "costo_total": costo_total,"promedio_compra" :promedio_compra})
 
 
 

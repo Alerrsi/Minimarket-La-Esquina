@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import views
@@ -29,7 +30,8 @@ class VentaApiView(views.APIView):
         serializer = VentaSerializer(ventas, many=True)
         return Response(serializer.data)
 
-
+@login_required
+@user_passes_test(lambda x:x.rol.nombre == "Cajero" or x.rol.nombre == "Sysadmin")
 def ventasView(request):
     # Obtener todas las ventas
     ventas = Venta.objects.all().order_by('-fecha')
@@ -46,7 +48,8 @@ def ventasView(request):
     
     return render(request, 'ventas.html', context)
 
-
+@login_required
+@user_passes_test(lambda x:x.rol.nombre == "Cajero" or x.rol.nombre == "Sysadmin")
 def ventasForm(request):
     Productos = Producto.objects.all()[:8]
     context = {

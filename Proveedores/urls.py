@@ -11,9 +11,9 @@ router.register("proveedores", ProveedorViewSet, basename="proveedores")
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    path('proveedores', proveedorView, name ='proveedorView'),
-    path('proveedores/formulario', proveedorForm, name="proveedorForm") ,
-    path('proveedores/formulario/<int:id>/', proveedorMod, name='editar_proveedor'),
-    path('proveedores/<int:id>/', proveedorDel, name="eliminar_proveedor")
+    path('Proveedores', proveedorView, name ='proveedorView'),
+    path('Proveedores/formulario', proveedorForm, name="proveedorForm") ,
+    path('Proveedores/formulario/<int:id>/', proveedorMod, name='editar_proveedor'),
+    path('Proveedores/<int:id>/', proveedorDel, name="eliminar_proveedor")
 ]
 

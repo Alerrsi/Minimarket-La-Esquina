@@ -9,6 +9,7 @@ class CoreConfig(AppConfig):
 
     def ready(self):
         # cuando la app esté lista conectamos la señal
-        from .signals import actualizarProducto
+        from .signals import actualizarProducto, actualizarProductoVentas
 
         setting_changed.connect(actualizarProducto)
+        setting_changed.connect(actualizarProductoVentas)

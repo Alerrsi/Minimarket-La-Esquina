@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.db.models import F
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -54,6 +55,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     # metodo de para actualizar un solo producto mediante PUT
     def update(self, request, pk=None):
         producto = get_object_or_404(Producto, pk=pk)
+        
         serializer = ProductoSerializer(producto, data = request.data, context = {"metodo": "update"})
         if serializer.is_valid():
             serializer.save()
@@ -75,7 +77,10 @@ class ProductoViewSet(viewsets.ModelViewSet):
 @login_required
 @user_passes_test(lambda x: x.rol.nombre == "Administrador" or x.rol.nombre == "Sysadmin" or x.rol.nombre == "Bodeguero")
 def productosView(request):
-    return render(request, "productos.html")
+    cantidad_productos = Producto.objects.all().count()
+    disponibles = Producto.objects.filter(stock__gt = 0).count()
+    stock_bajo = Producto.objects.filter(stock__lte = F("stock_minimo")).count()
+    return render(request, "productos.html", {"cantidad_productos": cantidad_productos, "stock_bajo": stock_bajo, "disponibles": disponibles})
 
 
 @login_required

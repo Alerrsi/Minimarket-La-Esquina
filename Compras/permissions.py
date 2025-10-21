@@ -9,7 +9,9 @@ class CompraPermission(BasePermission):
             return True
         if request.user.is_anonymous:
             return False
+        
+
 
         roles = [0, 2]
 
-        return request.user.rol.id in roles
+        return request.user.rol.id in roles 
