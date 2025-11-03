@@ -25,7 +25,11 @@ class DetalleVentaSerializer(serializers.Serializer):
         
     
     def validate(self, attrs):
-        precio = Producto.objects.filter(pk= attrs["producto"]).values_list("precio", flat=True)[0]
+        
+        producto = Producto.objects.get(pk= attrs["producto"])
+        if attrs["cantidad"] > producto.stock:
+            raise serializers.ValidationError("Cantidad de stock no disponible")
+
 
         return attrs
 

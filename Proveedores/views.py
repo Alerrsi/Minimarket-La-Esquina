@@ -5,7 +5,7 @@ from rest_framework import viewsets, status
 from . serializers import ProveedorSerializer
 from .models import Proveedor
 from .forms import ProveedorForm
-# Create your views here.
+
 
 
 class ProveedorViewSet(viewsets.ModelViewSet):

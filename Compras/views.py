@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import views
@@ -17,15 +20,14 @@ class CompraApiView(views.APIView):
         if serializer.is_valid():
             
             serializer.save()
-
+            cache.delete("compras")
             return Response(request.data, status=status.HTTP_201_CREATED)
 
         
         return Response(serializer.errors)
     
-
     def get(self, request):
-        
+    
         compras = [
             {   
                 "id": c.id,
@@ -45,12 +47,10 @@ class CompraApiView(views.APIView):
             } 
             for c in Compra.objects.all()
         ]
-
-        a = Compra.objects.all().values_list("fecha")
-        print(a)
         
         serializer = CompraSerializer(compras, many=True)
-        return Response(serializer.data)
+        data = cache.get_or_set("compras", serializer.data, timeout=60*2)
+        return Response(data)
 
 
 

@@ -2,3 +2,6 @@ django
 djangorestframework
 django-compressor
 pillow
+openpyxl
+django-redis
+
